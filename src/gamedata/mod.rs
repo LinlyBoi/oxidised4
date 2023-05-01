@@ -46,6 +46,6 @@ impl Board {
 #[derive(Clone, Debug)]
 pub enum Disk {
     RED,
-    BLUE,
+    BLU,
     EMPTY,
 }
