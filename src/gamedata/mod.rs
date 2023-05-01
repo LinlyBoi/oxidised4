@@ -42,8 +42,46 @@ impl Board {
         unimplemented!()
     }
 }
+pub fn get_indices(
+    index: &(usize, usize),
+    op: fn(&(usize, usize), usize) -> (usize, usize),
+    values: Vec<usize>,
+) -> Vec<(usize, usize)> {
+    let mut indices: Vec<(usize, usize)> = Vec::with_capacity(3);
+    for num in values {
+        indices.push(op(index, num));
+    }
+    indices
+}
 
-#[derive(Clone, Debug)]
+pub fn inc_row((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (row + value as usize, *col)
+}
+pub fn inc_col((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (*row, col + value as usize)
+}
+
+pub fn dec_row((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (row - value as usize, *col)
+}
+pub fn dec_col((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (*row, col - value as usize)
+}
+pub fn inc_both((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (row + value, col + value)
+}
+pub fn dec_both((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (row - value, col - value)
+}
+//TODO get better names for these
+pub fn inc_dec((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (row + value, col - value)
+}
+pub fn dec_inc((row, col): &(usize, usize), value: usize) -> (usize, usize) {
+    (row - value, col + value)
+}
+
+#[derive(Copy, Clone, Debug)]
 pub enum Disk {
     RED,
     BLU,
