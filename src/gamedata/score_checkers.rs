@@ -14,7 +14,6 @@ pub fn one_direction(board: &Array2D<Disk>, index: &(usize, usize), direction: D
         match board.get(current_index.0, current_index.1) {
             Some(_disk) => {
                 if variant_eq(current_disk, _disk) && !matches!(_disk, Disk::EMPTY) {
-                    dbg!(current_index, in_a_row, current_disk, _disk);
                     // add in a row by 1
                     in_a_row += 1;
                     //go to next element
@@ -53,21 +52,21 @@ pub fn one_direction(board: &Array2D<Disk>, index: &(usize, usize), direction: D
                             current_index.0 += 1;
                         }
                         Direction::UPBACK => {
-                            if current_index.0 == 0 || current_index.1 == board.num_rows() - 1 {
+                            if current_index.0 == board.num_columns() - 1 || current_index.1 == 0 {
                                 break;
                             }
                             current_index.1 -= 1;
                             current_index.0 += 1;
                         }
                         Direction::DOWNFORW => {
-                            if current_index.1 == 0 || current_index.0 == board.num_columns() - 1 {
+                            if current_index.0 == 0 || current_index.1 == board.num_columns() - 1 {
                                 break;
                             }
                             current_index.1 += 1;
                             current_index.0 -= 1;
                         }
                         Direction::DOWNBACK => {
-                            if current_index.1 == 0 || current_index.0 == 0 {
+                            if current_index.0 == 0 || current_index.1 == 0 {
                                 break;
                             }
                             current_index.1 -= 1;
@@ -82,7 +81,6 @@ pub fn one_direction(board: &Array2D<Disk>, index: &(usize, usize), direction: D
             None => break,
         }
     }
-    dbg!(in_a_row);
     if in_a_row == 4 {
         //score added
         return 1;
@@ -98,13 +96,6 @@ pub fn two_direction(board: &Array2D<Disk>, index: &(usize, usize)) -> i32 {
     unimplemented!()
     //+-1 -+2
 }
-//1 == number
-//dbg!()
-//println!()
-//matches!()
-//assert!()
-
-// for _num 0..n {}
 pub enum Direction {
     UP,
     DOWN,
@@ -116,6 +107,7 @@ pub enum Direction {
     DOWNBACK,
     //TODO add more directions for diagonals
 }
+// serves nothing except do what matches!() should have done all along
 fn variant_eq<T>(a: &T, b: &T) -> bool {
     std::mem::discriminant(a) == std::mem::discriminant(b)
 }
