@@ -12,3 +12,5 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
+src/gamedata/.tests.rs.swp
+src/gamedata/.score_checkers.rs.swp
