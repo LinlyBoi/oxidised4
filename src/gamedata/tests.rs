@@ -126,6 +126,16 @@ fn scan_diag2() {
 fn variant_eq_test() {
     assert!(score_checkers::variant_eq(&Disk::RED, &Disk::RED));
     assert!(matches!(Disk::RED, Disk::RED));
+    assert!(matches!(&Disk::BLU, &Disk::BLU));
     assert!(!score_checkers::variant_eq(&Disk::BLU, &Disk::RED));
     assert!(!matches!(Disk::BLU, Disk::RED));
+}
+#[test]
+fn game_over_test() {
+    let mut board = Board::default();
+    assert!(!board.game_over());
+    board.columns = Array2D::filled_with(Disk::BLU, 7, 6);
+    assert!(board.game_over());
+    board.columns.set(0, 0, Disk::EMPTY).expect("balls");
+    assert!(!board.game_over());
 }
