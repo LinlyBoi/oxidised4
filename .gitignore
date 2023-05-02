@@ -14,3 +14,5 @@ Cargo.lock
 *.pdb
 src/gamedata/.tests.rs.swp
 src/gamedata/.score_checkers.rs.swp
+src/gamedata/.indices.rs.swp
+src/gamedata/.mod.rs.swp
