@@ -20,7 +20,7 @@ pub fn scan(
     for _num in 0..depth {
         match board.get(current_index.0, current_index.1) {
             Some(_disk) => {
-                dbg!(_disk, current_disk);
+                dbg!(_disk, current_disk, in_a_row);
                 if variant_eq(current_disk, _disk) && !variant_eq(_disk, &Disk::EMPTY) {
                     // add in a row by 1
                     in_a_row += 1;
