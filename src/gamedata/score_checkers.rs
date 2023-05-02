@@ -139,6 +139,7 @@ pub enum Direction {
     DOWNRIGHT,
 }
 // serves nothing except do what matches!() should have done all along
+// matches works too I'm just dumb
 pub fn variant_eq<T>(a: &T, b: &T) -> bool {
     std::mem::discriminant(a) == std::mem::discriminant(b)
 }
