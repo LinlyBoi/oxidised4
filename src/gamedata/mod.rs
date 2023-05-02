@@ -1,7 +1,6 @@
 mod heuristic;
 mod indices;
 mod score_checkers;
-
 #[cfg(test)]
 mod tests;
 
@@ -99,17 +98,6 @@ impl Board {
             == 0
     }
 }
-// pub fn get_indices(
-//     index: &(usize, usize),
-//     op: fn(&(usize, usize), usize) -> (usize, usize),
-//     values: Vec<usize>,
-// ) -> Vec<(usize, usize)> {
-//     let mut indices: Vec<(usize, usize)> = Vec::with_capacity(3);
-//     for num in values {
-//         indices.push(op(index, num));
-//     }
-//     indices
-// }
 
 #[derive(Copy, Clone, Debug)]
 pub enum Disk {
