@@ -1,8 +1,10 @@
+mod indices;
 mod score_checkers;
 #[cfg(test)]
 mod tests;
 
 use array2d::Array2D;
+pub use indices::*;
 
 use self::score_checkers::scan;
 #[derive(Clone)]
@@ -41,6 +43,14 @@ impl Board {
     fn score_check(&mut self, index: (usize, usize)) {
         unimplemented!()
     }
+    fn game_over(&self) -> bool {
+        self.columns
+            .as_row_major()
+            .iter()
+            .filter(|&d| matches!(d, &Disk::EMPTY))
+            .count()
+            == 0
+    }
 }
 // pub fn get_indices(
 //     index: &(usize, usize),
@@ -53,33 +63,6 @@ impl Board {
 //     }
 //     indices
 // }
-
-pub fn inc_row((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row + value as usize, *col)
-}
-pub fn inc_col((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (*row, col + value as usize)
-}
-
-pub fn dec_row((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row - value as usize, *col)
-}
-pub fn dec_col((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (*row, col - value as usize)
-}
-pub fn inc_both((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row + value, col + value)
-}
-pub fn dec_both((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row - value, col - value)
-}
-//TODO get better names for these
-pub fn inc_dec((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row + value, col - value)
-}
-pub fn dec_inc((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row - value, col + value)
-}
 
 #[derive(Copy, Clone, Debug)]
 pub enum Disk {
