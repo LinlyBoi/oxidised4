@@ -14,6 +14,7 @@ fn play() {
     assert!(board.play(Disk::BLU, 0));
     assert!(board.play(Disk::BLU, 0));
     assert!(board.play(Disk::BLU, 0));
+    assert_eq!(1, board.blu_score);
     assert!(board.play(Disk::BLU, 0));
     assert!(board.play(Disk::BLU, 0));
     assert!(board.play(Disk::BLU, 0));
