@@ -125,10 +125,22 @@ pub fn get_legal_moves(
             moves.push(Direction::RIGHT)
         }
     };
+    if moves.contains(&Direction::UP) && moves.contains(&Direction::LEFT) {
+        moves.push(Direction::UPLEFT);
+    }
+    if moves.contains(&Direction::UP) && moves.contains(&Direction::RIGHT) {
+        moves.push(Direction::UPRIGHT);
+    }
+    if moves.contains(&Direction::DOWN) && moves.contains(&Direction::LEFT) {
+        moves.push(Direction::DOWNLEFT);
+    }
+    if moves.contains(&Direction::DOWN) && moves.contains(&Direction::RIGHT) {
+        moves.push(Direction::DOWNRIGHT);
+    }
     moves
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Direction {
     UP,
     DOWN,
