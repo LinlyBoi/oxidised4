@@ -1,5 +1,7 @@
+mod heuristic;
 mod indices;
 mod score_checkers;
+
 #[cfg(test)]
 mod tests;
 
