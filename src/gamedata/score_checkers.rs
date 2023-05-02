@@ -33,14 +33,12 @@ pub fn scan(
                                 break;
                             }
                             current_index = dec_row(&current_index, 1);
-                            //current_index.0 -= 1;
                         }
                         Direction::UP => {
                             if current_index.0 == board.num_rows() - 1 {
                                 break;
                             }
                             current_index = inc_row(&current_index, 1);
-                            //    current_index.0 += 1;
                         }
                         Direction::LEFT => {
                             if current_index.1 == 0 {
