@@ -122,6 +122,7 @@ fn scan_diag2() {
     dbg!(&board.columns.as_columns());
     assert_eq!(4, scan(&board.columns, &(0, 3), Direction::UPLEFT, 4));
     assert_eq!(4, scan(&board.columns, &(3, 0), Direction::DOWNRIGHT, 4));
+    assert_eq!(1, board.blu_score);
 }
 #[test]
 fn variant_eq_test() {
