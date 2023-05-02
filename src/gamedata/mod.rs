@@ -9,8 +9,8 @@ pub use indices::*;
 use self::score_checkers::scan;
 #[derive(Clone)]
 pub struct Board {
-    p1_score: i32,
-    p2_score: i32,
+    red_score: i32,
+    blu_score: i32,
     columns: Array2D<Disk>,
 }
 
@@ -19,8 +19,8 @@ impl Default for Board {
         let columns = Array2D::filled_with(Disk::EMPTY, 7, 6);
 
         Self {
-            p1_score: 0,
-            p2_score: 0,
+            red_score: 0,
+            blu_score: 0,
             columns,
         }
     }
@@ -28,20 +28,65 @@ impl Default for Board {
 
 impl Board {
     fn getscore(&self) -> (i32, i32) {
-        (self.p1_score, self.p2_score)
+        (self.red_score, self.blu_score)
     }
-    fn play(&mut self, disk: Disk, col: i32) -> bool {
+    fn play(&mut self, disk: Disk, col: usize) -> bool {
         let column = &self.columns.as_columns()[col as usize];
         let empty = column.iter().filter(|&a| matches!(a, Disk::EMPTY)).count();
         dbg!(empty);
         let top = column.len() - empty;
         match self.columns.set(top, col as usize, disk) {
-            Ok(_) => true,
+            Ok(_) => {
+                self.score_check((top, col));
+                true
+            }
             Err(_) => false,
         }
     }
     fn score_check(&mut self, index: (usize, usize)) {
-        unimplemented!()
+        use score_checkers::*;
+        let moves = get_legal_moves(
+            &index,
+            (self.columns.num_rows(), self.columns.num_columns()),
+        );
+        match self.columns.get(index.0, index.1) {
+            Some(disk) => match disk {
+                Disk::RED => {
+                    for _move in moves {
+                        let mut consecutive = scan(&self.columns, &index, _move.clone(), 4);
+                        if consecutive < 4 {
+                            consecutive += scan(
+                                &self.columns,
+                                &index,
+                                flip_direction(_move),
+                                4 - consecutive + 1,
+                            )
+                        }
+                        if consecutive - 1 == 4 {
+                            self.red_score += 1
+                        }
+                    }
+                }
+                Disk::BLU => {
+                    for _move in moves {
+                        let mut consecutive = scan(&self.columns, &index, _move.clone(), 4);
+                        if consecutive < 4 {
+                            consecutive += scan(
+                                &self.columns,
+                                &index,
+                                flip_direction(_move),
+                                4 - consecutive + 1,
+                            )
+                        }
+                        if consecutive - 1 == 4 {
+                            self.blu_score += 1
+                        }
+                    }
+                }
+                Disk::EMPTY => return,
+            },
+            None => return,
+        }
     }
     fn game_over(&self) -> bool {
         self.columns
