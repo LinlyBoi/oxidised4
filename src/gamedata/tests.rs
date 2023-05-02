@@ -1,6 +1,6 @@
-use crate::gamedata::{dec_col, score_checkers::Direction, Board};
+use crate::gamedata::score_checkers::Direction;
 
-use super::{get_indices, inc_col, score_checkers::two_direction, Disk};
+use super::*;
 
 // #[test]
 // fn board_default() {
@@ -47,7 +47,7 @@ fn play() {
     assert!(!board.play(Disk::BLU, 3));
 }
 #[test]
-fn one_direction_updown() {
+fn scan_updown() {
     let mut board = Board::default();
     board.play(Disk::BLU, 0);
     board.play(Disk::BLU, 0);
@@ -56,54 +56,42 @@ fn one_direction_updown() {
     board.play(Disk::BLU, 0);
     board.play(Disk::BLU, 0);
     board.play(Disk::BLU, 0);
-    // assert_eq!(1, one_direction(&board.columns, &(4, 0), Direction::DOWN));
-    // assert_eq!(1, one_direction(&board.columns, &(3, 0), Direction::DOWN));
+    assert_eq!(3, scan(&board.columns, &(4, 0), Direction::DOWN, 3));
+    assert_eq!(3, scan(&board.columns, &(3, 0), Direction::DOWN, 3));
 }
 #[test]
-fn one_direction_updown2() {
+fn scan_updown2() {
     let mut board = Board::default();
     board.play(Disk::BLU, 0);
     board.play(Disk::RED, 0);
     board.play(Disk::BLU, 0);
     board.play(Disk::BLU, 0);
-    //  assert_eq!(0, one_direction(&board.columns, &(3, 0), Direction::DOWN));
+    assert_eq!(0, scan(&board.columns, &(0, 0), Direction::UP, 3));
 }
 #[test]
-fn one_direction_forwardback() {
+fn scan_forwardback() {
     let mut board = Board::default();
     board.play(Disk::BLU, 0);
     board.play(Disk::BLU, 1);
     board.play(Disk::BLU, 2);
     board.play(Disk::BLU, 3);
 
-    //  assert!(!matches!(Disk::RED, Disk::BLU));
-    //  assert_eq!(
-    //      1,
-    //      one_direction(&board.columns, &(0, 0), Direction::FORWARD)
-    //  );
-    //  assert_eq!(
-    //      1,
-    //      one_direction(&board.columns, &(0, 3), Direction::BACKWARD)
-    //  );
+    assert!(!matches!(Disk::RED, Disk::BLU));
+    assert_eq!(1, scan(&board.columns, &(0, 0), Direction::RIGHT, 3));
+    assert_eq!(1, scan(&board.columns, &(0, 3), Direction::LEFT, 3));
 }
 #[test]
-fn one_direction_forwardback2() {
+fn scan_forwardback2() {
     let mut board = Board::default();
     board.play(Disk::BLU, 0);
     board.play(Disk::BLU, 1);
     board.play(Disk::RED, 2);
     board.play(Disk::BLU, 3);
-    //  assert_eq!(
-    //      0,
-    //      one_direction(&board.columns, &(0, 0), Direction::FORWARD)
-    //  );
-    //  assert_eq!(
-    //      0,
-    //      one_direction(&board.columns, &(0, 3), Direction::BACKWARD)
-    //  );
+    assert_eq!(0, scan(&board.columns, &(0, 0), Direction::RIGHT, 3));
+    assert_eq!(0, scan(&board.columns, &(0, 3), Direction::LEFT, 3));
 }
 #[test]
-fn one_direction_diag1() {
+fn scan_diag1() {
     let mut board = Board::default();
     board.play(Disk::BLU, 0);
     board.play(Disk::RED, 1);
@@ -115,14 +103,11 @@ fn one_direction_diag1() {
     board.play(Disk::RED, 3);
     board.play(Disk::RED, 3);
     board.play(Disk::BLU, 3);
-    //   assert_eq!(1, one_direction(&board.columns, &(0, 0), Direction::UPFORW));
-    //   assert_eq!(
-    //       1,
-    //       one_direction(&board.columns, &(3, 3), Direction::DOWNBACK)
-    //   );
+    assert_eq!(1, scan(&board.columns, &(0, 0), Direction::UPRIGHT, 3));
+    assert_eq!(1, scan(&board.columns, &(3, 3), Direction::DOWNLEFT, 3));
 }
 #[test]
-fn one_direction_diag2() {
+fn scan_diag2() {
     let mut board = Board::default();
     board.play(Disk::BLU, 3);
     board.play(Disk::RED, 2);
@@ -135,30 +120,13 @@ fn one_direction_diag2() {
     board.play(Disk::RED, 0);
     board.play(Disk::BLU, 0);
     dbg!(&board.columns.as_columns());
-    //    assert_eq!(1, one_direction(&board.columns, &(0, 3), Direction::UPBACK));
-    //    assert_eq!(
-    //        1,
-    //        one_direction(&board.columns, &(3, 0), Direction::DOWNFORW)
-    //    );
+    assert_eq!(1, scan(&board.columns, &(0, 3), Direction::UPLEFT, 3));
+    assert_eq!(1, scan(&board.columns, &(3, 0), Direction::DOWNRIGHT, 3));
 }
 #[test]
-fn get_indices_test() {
-    let values: Vec<usize> = vec![1, 2];
-    let indices = get_indices(&(2, 1), inc_col, values);
-    assert_eq!(vec![(2, 2), (2, 3)], indices);
-    let indices = get_indices(&(2, 1), dec_col, vec![1]);
-    assert_eq!(vec![(2, 0)], indices);
-}
-
-#[test]
-fn two_direction_test() {
-    let mut board = Board::default();
-    board.play(Disk::BLU, 0);
-    board.play(Disk::BLU, 1);
-    board.play(Disk::BLU, 2);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 4);
-    board.play(Disk::BLU, 5);
-    let added = two_direction(&board.columns, &(0, 3), Direction::HORIZONTAL);
-    assert_eq!(1, added)
+fn variant_eq_test() {
+    assert!(score_checkers::variant_eq(&Disk::RED, &Disk::RED));
+    assert!(matches!(Disk::RED, Disk::RED));
+    assert!(!score_checkers::variant_eq(&Disk::BLU, &Disk::RED));
+    assert!(!matches!(Disk::BLU, Disk::RED));
 }

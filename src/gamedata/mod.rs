@@ -4,7 +4,7 @@ mod tests;
 
 use array2d::Array2D;
 
-use self::score_checkers::{one_direction, two_direction};
+use self::score_checkers::scan;
 #[derive(Clone)]
 pub struct Board {
     p1_score: i32,
@@ -42,17 +42,17 @@ impl Board {
         unimplemented!()
     }
 }
-pub fn get_indices(
-    index: &(usize, usize),
-    op: fn(&(usize, usize), usize) -> (usize, usize),
-    values: Vec<usize>,
-) -> Vec<(usize, usize)> {
-    let mut indices: Vec<(usize, usize)> = Vec::with_capacity(3);
-    for num in values {
-        indices.push(op(index, num));
-    }
-    indices
-}
+// pub fn get_indices(
+//     index: &(usize, usize),
+//     op: fn(&(usize, usize), usize) -> (usize, usize),
+//     values: Vec<usize>,
+// ) -> Vec<(usize, usize)> {
+//     let mut indices: Vec<(usize, usize)> = Vec::with_capacity(3);
+//     for num in values {
+//         indices.push(op(index, num));
+//     }
+//     indices
+// }
 
 pub fn inc_row((row, col): &(usize, usize), value: usize) -> (usize, usize) {
     (row + value as usize, *col)
