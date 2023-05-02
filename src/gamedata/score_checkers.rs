@@ -17,15 +17,15 @@ pub fn scan(
     };
     let mut current_index = *index;
     let mut in_a_row = 0;
-    dbg!("Starting new thing", &direction);
+    // dbg!("Starting new thing", &direction);
     for _num in 0..depth {
         match board.get(current_index.0, current_index.1) {
             Some(_disk) => {
-                dbg!(_disk, current_disk, in_a_row);
+                //            dbg!(_disk, current_disk, in_a_row);
                 if variant_eq(current_disk, _disk) && !variant_eq(_disk, &Disk::EMPTY) {
                     // add in a row by 1
                     in_a_row += 1;
-                    dbg!(current_index);
+                    //               dbg!(current_index);
                     //go to next element
                     match direction {
                         Direction::DOWN => {
