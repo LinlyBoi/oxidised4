@@ -17,6 +17,7 @@ pub fn scan(
     };
     let mut current_index = *index;
     let mut in_a_row = 0;
+    dbg!("Starting new thing", &direction);
     for _num in 0..depth {
         match board.get(current_index.0, current_index.1) {
             Some(_disk) => {
@@ -103,13 +104,12 @@ pub fn scan(
 // board[(2,3)];
 pub fn get_legal_moves(
     (row, col): &(usize, usize),
-    direction: Direction,
     (nrow, ncol): (usize, usize),
 ) -> Vec<Direction> {
     let max_col = nrow - 1;
     let max_row = ncol - 1;
     let mut moves: Vec<Direction> = vec![];
-    match *row {
+    match *col {
         0 => moves.push(Direction::UP),
         max_row => moves.push(Direction::DOWN),
         _ => {
@@ -117,7 +117,7 @@ pub fn get_legal_moves(
             moves.push(Direction::DOWN);
         }
     };
-    match *col {
+    match *row {
         0 => moves.push(Direction::RIGHT),
         max_row => moves.push(Direction::LEFT),
         _ => {
@@ -128,6 +128,7 @@ pub fn get_legal_moves(
     moves
 }
 
+#[derive(Clone, Debug)]
 pub enum Direction {
     UP,
     DOWN,
@@ -142,4 +143,16 @@ pub enum Direction {
 // matches works too I'm just dumb
 pub fn variant_eq<T>(a: &T, b: &T) -> bool {
     std::mem::discriminant(a) == std::mem::discriminant(b)
+}
+pub fn flip_direction(direction: Direction) -> Direction {
+    match direction {
+        Direction::UP => Direction::DOWN,
+        Direction::DOWN => Direction::UP,
+        Direction::LEFT => Direction::RIGHT,
+        Direction::RIGHT => Direction::LEFT,
+        Direction::UPLEFT => Direction::DOWNRIGHT,
+        Direction::UPRIGHT => Direction::DOWNLEFT,
+        Direction::DOWNLEFT => Direction::UPRIGHT,
+        Direction::DOWNRIGHT => Direction::UPLEFT,
+    }
 }
