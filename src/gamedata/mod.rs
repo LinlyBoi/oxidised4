@@ -7,7 +7,6 @@ mod tests;
 use array2d::Array2D;
 pub use indices::*;
 
-use self::score_checkers::scan;
 #[derive(Clone)]
 pub struct Board {
     red_score: i32,
