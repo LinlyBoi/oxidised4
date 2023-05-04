@@ -1,4 +1,5 @@
-use crate::gamedata::{heuristic::potential_wins, score_checkers::Direction};
+use self::score_checkers::scan;
+use crate::gamedata::score_checkers::Direction;
 
 use super::*;
 
