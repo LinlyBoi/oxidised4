@@ -15,20 +15,17 @@ const MAX_WINS: i32 = 17;
 
 pub fn get_score(board: &Board, disk: Disk) -> i32 {
     //this should be summing up a bunch of functions defined below this one
+    let sequences = get_dups(&board.columns, &Disk::BLU);
     let score: i32 = match disk {
         Disk::RED => board.red_score - board.blu_score,
         Disk::BLU => board.blu_score - board.red_score,
         Disk::EMPTY => panic!("Why would you ever"),
     };
-    potential_streaks(&board.columns, &disk)
-        + potential_wins(&board.columns, &disk)
-        + score * SCORE_DIFF
+    potential_streaks(&sequences, &disk) + potential_wins(&sequences, &disk) + score * SCORE_DIFF
 }
-pub fn potential_wins(board: &Array2D<Disk>, disk: &Disk) -> i32 {
-    let pot_wins = get_dups(board, disk);
-    dbg!(&pot_wins);
+pub fn potential_wins(sequences: &Vec<Vec<Disk>>, disk: &Disk) -> i32 {
     let mut count: i32 = 0;
-    for win in pot_wins {
+    for win in sequences {
         if win
             .iter()
             .filter(|&_disk| variant_eq(_disk, &Disk::EMPTY))
@@ -44,13 +41,23 @@ pub fn potential_wins(board: &Array2D<Disk>, disk: &Disk) -> i32 {
         _ => POT_WINS * count,
     }
 }
-pub fn potential_streaks(board: &Array2D<Disk>, disk: &Disk) -> i32 {
+pub fn potential_streaks(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
     //This should grab potential streaks (Disk::EMPTY)
     // get all middle indexes
-    let streaks = get_dups(board, disk);
-    match streaks.iter().count() {
+    let streaks = sequences
+        .iter()
+        .filter(|&seq| {
+            seq.iter()
+                .filter(|&disk| variant_eq(disk, &Disk::EMPTY))
+                .count()
+                > 1
+                && seq.len() == 4
+        })
+        .count();
+
+    match streaks {
         1 => POT_STREAK,
-        _ => POT_STREAKS * streaks.iter().count() as i32,
+        _ => POT_STREAKS * streaks as i32,
     }
 }
 fn get_dups(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
@@ -164,4 +171,29 @@ fn heur_scan(
         }
     }
     in_a_row
+}
+
+//Tests because I am making everything public
+//TODO separate module here
+#[test]
+fn heuristic_test_1() {
+    let mut board = Board::default();
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 2);
+    board.play(Disk::BLU, 1);
+    let sequences = get_dups(&board.columns, &Disk::BLU);
+    assert_eq!(16, potential_wins(&sequences, &Disk::BLU));
+    assert_eq!(18, potential_streaks(&sequences, &Disk::BLU));
+    board.play(Disk::BLU, 0);
+    let sequences = get_dups(&board.columns, &Disk::BLU);
+    assert_eq!(5, potential_wins(&sequences, &Disk::BLU));
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    let sequences = get_dups(&board.columns, &Disk::BLU);
+    assert_eq!(0, potential_wins(&sequences, &Disk::BLU));
+    assert_eq!(12, potential_streaks(&sequences, &Disk::BLU));
 }
