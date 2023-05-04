@@ -104,12 +104,12 @@ pub fn get_legal_moves(
     (row, col): &(usize, usize),
     (nrow, ncol): (usize, usize),
 ) -> Vec<Direction> {
-    let max_col = nrow - 1;
-    let max_row = ncol - 1;
+    let _max_col = nrow - 1;
+    let _max_row = ncol - 1;
     let mut moves: Vec<Direction> = vec![];
     match *col {
         0 => moves.push(Direction::UP),
-        max_row => moves.push(Direction::DOWN),
+        _max_row => moves.push(Direction::DOWN),
         _ => {
             moves.push(Direction::UP);
             moves.push(Direction::DOWN);
@@ -117,7 +117,7 @@ pub fn get_legal_moves(
     };
     match *row {
         0 => moves.push(Direction::RIGHT),
-        max_row => moves.push(Direction::LEFT),
+        _max_row => moves.push(Direction::LEFT),
         _ => {
             moves.push(Direction::LEFT);
             moves.push(Direction::RIGHT)
