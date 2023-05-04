@@ -1,4 +1,4 @@
-use crate::gamedata::score_checkers::Direction;
+use crate::gamedata::{heuristic::potential_wins, score_checkers::Direction};
 
 use super::*;
 
@@ -139,4 +139,15 @@ fn game_over_test() {
     assert!(board.game_over());
     board.columns.set(0, 0, Disk::EMPTY).expect("balls");
     assert!(!board.game_over());
+}
+
+#[test]
+fn heuristic_pot_wins() {
+    let mut board = Board::default();
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 2);
+    board.play(Disk::BLU, 1);
+    assert_eq!(16, potential_wins(&board.columns, &Disk::BLU));
 }
