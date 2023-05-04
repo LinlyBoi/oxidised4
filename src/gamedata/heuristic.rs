@@ -2,7 +2,7 @@ use array2d::Array2D;
 
 use super::{
     dec_both, dec_col, dec_inc, dec_row, inc_both, inc_col, inc_dec, inc_row,
-    score_checkers::{variant_eq, Direction},
+    score_checkers::{get_legal_moves, variant_eq, Direction},
     Board, Disk,
 };
 //multipliers
@@ -13,18 +13,58 @@ const POT_WINS: i32 = 8;
 const SCORE_DIFF: i32 = 6;
 const MAX_WINS: i32 = 17;
 
-pub fn get_score(board: &Board) -> i32 {
+pub fn get_score(board: &Board, disk: Disk) -> i32 {
     //this should be summing up a bunch of functions defined below this one
-    todo!()
+    let score: i32 = match disk {
+        Disk::RED => board.red_score - board.blu_score,
+        Disk::BLU => board.blu_score - board.red_score,
+        Disk::EMPTY => panic!("Why would you ever"),
+    };
+    potential_streaks(&board.columns, &disk)
+        + potential_wins(&board.columns, &disk)
+        + score * SCORE_DIFF
 }
-pub fn potential_wins(board: &Array2D<Disk>) -> i32 {
-    //3 of same kind and 4th EMPTY
-    todo!()
+pub fn potential_wins(board: &Array2D<Disk>, disk: &Disk) -> i32 {
+    let pot_wins = get_dups(board, disk);
+    match pot_wins {
+        1 => POT_WIN,
+        _ => POT_WINS * pot_wins,
+    }
 }
-pub fn potential_streaks(board: &Array2D<Disk>) -> i32 {
+pub fn potential_streaks(board: &Array2D<Disk>, disk: &Disk) -> i32 {
     //This should grab potential streaks (Disk::EMPTY)
-    todo!()
+    // get all middle indexes
+    let streaks = get_dups(board, disk);
+    match streaks {
+        1 => POT_STREAK,
+        _ => POT_STREAKS * streaks,
+    }
 }
+fn get_dups(board: &Array2D<Disk>, _target_disk: &Disk) -> i32 {
+    let mid_col = (board.num_rows() - 1) / 2;
+    let mid_indices: Vec<(usize, usize)> = board
+        .indices_row_major()
+        .filter(|&index| index.1.eq(&mid_col))
+        .collect();
+    let mut dups = 0;
+    for index in mid_indices {
+        let moves = get_legal_moves(&index, (board.num_rows(), board.num_columns()));
+        for direction in moves {
+            let poopy = heur_scan(&board, &index, direction, 4);
+            match poopy
+                .iter()
+                .filter(|&disk| matches!(&disk, _target_disk))
+                .count()
+            {
+                3 => dups += 1,
+                2 => dups += 1,
+                _ => {}
+            }
+        }
+    }
+    dups
+}
+
 fn heur_scan(
     board: &Array2D<Disk>,
     index: &(usize, usize),
