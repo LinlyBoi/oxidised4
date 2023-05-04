@@ -15,7 +15,7 @@ const MAX_WINS: i32 = 17;
 
 pub fn get_score(board: &Board, disk: Disk) -> i32 {
     //this should be summing up a bunch of functions defined below this one
-    let sequences = get_dups(&board.columns, &Disk::BLU);
+    let sequences = get_dups(&board.columns, &disk);
     let score: i32 = match disk {
         Disk::RED => board.red_score - board.blu_score,
         Disk::BLU => board.blu_score - board.red_score,
@@ -23,7 +23,7 @@ pub fn get_score(board: &Board, disk: Disk) -> i32 {
     };
     potential_streaks(&sequences, &disk) + potential_wins(&sequences, &disk) + score * SCORE_DIFF
 }
-pub fn potential_wins(sequences: &Vec<Vec<Disk>>, disk: &Disk) -> i32 {
+fn potential_wins(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
     let mut count: i32 = 0;
     for win in sequences {
         if win
@@ -41,9 +41,9 @@ pub fn potential_wins(sequences: &Vec<Vec<Disk>>, disk: &Disk) -> i32 {
         _ => POT_WINS * count,
     }
 }
-pub fn potential_streaks(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
+fn potential_streaks(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
     //This should grab potential streaks (Disk::EMPTY)
-    // get all middle indexes
+    // get all "EMPTY" indexes
     let streaks = sequences
         .iter()
         .filter(|&seq| {
@@ -61,8 +61,6 @@ pub fn potential_streaks(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
     }
 }
 fn get_dups(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
-    let edge_col = board.num_columns() - 1;
-    let mid_col = edge_col / 2;
     let mid_indices: Vec<(usize, usize)> = board
         .indices_row_major()
         .filter(|&index| variant_eq(board.get(index.0, index.1).expect(""), &Disk::EMPTY))
