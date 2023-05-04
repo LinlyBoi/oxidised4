@@ -99,7 +99,7 @@ impl Board {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Disk {
     RED,
     BLU,
