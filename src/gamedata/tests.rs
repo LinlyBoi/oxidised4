@@ -150,4 +150,11 @@ fn heuristic_pot_wins() {
     board.play(Disk::BLU, 2);
     board.play(Disk::BLU, 1);
     assert_eq!(16, potential_wins(&board.columns, &Disk::BLU));
+    board.play(Disk::BLU, 0);
+    assert_eq!(5, potential_wins(&board.columns, &Disk::BLU));
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    board.play(Disk::BLU, 3);
+    assert_eq!(0, potential_wins(&board.columns, &Disk::BLU));
 }

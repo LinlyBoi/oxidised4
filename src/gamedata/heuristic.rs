@@ -26,38 +26,52 @@ pub fn get_score(board: &Board, disk: Disk) -> i32 {
 }
 pub fn potential_wins(board: &Array2D<Disk>, disk: &Disk) -> i32 {
     let pot_wins = get_dups(board, disk);
-    match pot_wins {
+    dbg!(&pot_wins);
+    let mut count: i32 = 0;
+    for win in pot_wins {
+        if win
+            .iter()
+            .filter(|&_disk| variant_eq(_disk, &Disk::EMPTY))
+            .count()
+            == 1
+            && win.len() == 4
+        {
+            count += 1;
+        }
+    }
+    match count {
         1 => POT_WIN,
-        _ => POT_WINS * pot_wins,
+        _ => POT_WINS * count,
     }
 }
 pub fn potential_streaks(board: &Array2D<Disk>, disk: &Disk) -> i32 {
     //This should grab potential streaks (Disk::EMPTY)
     // get all middle indexes
     let streaks = get_dups(board, disk);
-    match streaks {
+    match streaks.iter().count() {
         1 => POT_STREAK,
-        _ => POT_STREAKS * streaks,
+        _ => POT_STREAKS * streaks.iter().count() as i32,
     }
 }
-fn get_dups(board: &Array2D<Disk>, _target_disk: &Disk) -> i32 {
-    let mid_col = (board.num_rows() - 1) / 2;
+fn get_dups(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
+    let edge_col = board.num_columns() - 1;
+    let mid_col = edge_col / 2;
     let mid_indices: Vec<(usize, usize)> = board
         .indices_row_major()
-        .filter(|&index| index.1.eq(&mid_col))
+        .filter(|&index| variant_eq(board.get(index.0, index.1).expect(""), &Disk::EMPTY))
         .collect();
-    let mut dups = 0;
+    let mut dups: Vec<Vec<Disk>> = vec![];
     for index in mid_indices {
         let moves = get_legal_moves(&index, (board.num_rows(), board.num_columns()));
         for direction in moves {
-            let poopy = heur_scan(&board, &index, direction, 4);
+            let poopy = heur_scan(&board, &index, direction.clone(), 4, *player_disk);
+            //dbg!(&index, &direction, &poopy);
             match poopy
                 .iter()
-                .filter(|&disk| matches!(&disk, _target_disk))
+                .filter(|&disk| variant_eq(disk, player_disk))
                 .count()
             {
-                3 => dups += 1,
-                2 => dups += 1,
+                3 | 2 => dups.push(poopy),
                 _ => {}
             }
         }
@@ -70,10 +84,10 @@ fn heur_scan(
     index: &(usize, usize),
     direction: Direction,
     depth: i32,
+    player_disk: Disk,
 ) -> Vec<Disk> {
-    let current_disk: &Disk;
     match board.get(index.0, index.1) {
-        Some(disk) => current_disk = disk,
+        Some(_) => {}
         None => return vec![],
     };
     let mut current_index = *index;
@@ -83,7 +97,7 @@ fn heur_scan(
         match board.get(current_index.0, current_index.1) {
             Some(_disk) => {
                 //            dbg!(_disk, current_disk, in_a_row);
-                if variant_eq(current_disk, _disk) || variant_eq(_disk, &Disk::EMPTY) {
+                if variant_eq(&player_disk, _disk) || variant_eq(_disk, &Disk::EMPTY) {
                     // add in a row by 1
                     in_a_row.push(*_disk);
                     //               dbg!(current_index);
