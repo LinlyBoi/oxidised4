@@ -13,6 +13,7 @@ pub struct Board {
     red_score: i32,
     blu_score: i32,
     columns: Array2D<Disk>,
+    last_move: usize,
 }
 
 impl Default for Board {
@@ -23,6 +24,7 @@ impl Default for Board {
             red_score: 0,
             blu_score: 0,
             columns,
+            last_move: 0,
         }
     }
 }
@@ -34,11 +36,12 @@ impl Board {
     fn play(&mut self, disk: Disk, col: usize) -> bool {
         let column = &self.columns.as_columns()[col as usize];
         let empty = column.iter().filter(|&a| matches!(a, Disk::EMPTY)).count();
-        dbg!(empty);
+        // dbg!(empty);
         let top = column.len() - empty;
         match self.columns.set(top, col as usize, disk) {
             Ok(_) => {
                 self.score_check((top, col));
+                self.last_move = col;
                 true
             }
             Err(_) => false,
@@ -97,6 +100,17 @@ impl Board {
             .count()
             == 0
     }
+    fn get_children(&self, disk: Disk) -> Vec<Board> {
+        let mut children: Vec<Board> = vec![];
+        for column in 0..self.columns.num_columns() {
+            let mut child = self.clone();
+            match child.play(disk, column) {
+                true => children.push(child),
+                false => {}
+            }
+        }
+        children
+    }
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -104,4 +118,11 @@ pub enum Disk {
     RED,
     BLU,
     EMPTY,
+}
+pub fn flip_disk(disk: Disk) -> Disk {
+    match disk {
+        Disk::RED => Disk::BLU,
+        Disk::BLU => Disk::RED,
+        Disk::EMPTY => Disk::EMPTY, //why..just why
+    }
 }
