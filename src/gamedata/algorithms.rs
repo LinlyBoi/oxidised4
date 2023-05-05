@@ -39,6 +39,6 @@ fn minimise(board: &Board, disk: &Disk, depth: &i32) -> (Option<Board>, i32) {
 #[test]
 fn minimax_test() {
     let mut board = Board::default();
-    dbg!(minimax_decision(&board, Disk::BLU, &4).columns.as_rows());
+    dbg!(minimax_decision(&board, Disk::BLU, &5).columns.as_rows());
     assert!(false);
 }
