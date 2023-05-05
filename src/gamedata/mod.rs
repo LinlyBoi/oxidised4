@@ -1,3 +1,4 @@
+mod algorithms;
 mod heuristic;
 mod indices;
 mod score_checkers;
@@ -16,7 +17,7 @@ pub struct Board {
 
 impl Default for Board {
     fn default() -> Self {
-        let columns = Array2D::filled_with(Disk::EMPTY, 7, 6);
+        let columns = Array2D::filled_with(Disk::EMPTY, 6, 7);
 
         Self {
             red_score: 0,
