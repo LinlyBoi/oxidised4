@@ -1,31 +1,91 @@
 use array2d::Array2D;
 
-use super::Disk;
+use crate::gamedata::{dec_both, dec_inc, dec_row, inc_both, inc_dec, inc_row};
 
-pub fn one_direction(board: &Array2D<Disk>, index: &(usize, usize), direction: Direction) -> i32 {
-    let current_disk = board.get(index.0, index.1);
+use super::{dec_col, inc_col, Disk};
+
+pub fn scan(
+    board: &Array2D<Disk>,
+    index: &(usize, usize),
+    direction: Direction,
+    depth: i32,
+) -> i32 {
+    let current_disk: &Disk;
+    match board.get(index.0, index.1) {
+        Some(disk) => current_disk = disk,
+        None => return 0,
+    };
     let mut current_index = *index;
     let mut in_a_row = 0;
-    loop {
-        dbg!(in_a_row, current_index);
+    // dbg!("Starting new thing", &direction);
+    for _num in 0..depth {
         match board.get(current_index.0, current_index.1) {
             Some(_disk) => {
-                if matches!(current_disk, _disk) && !matches!(_disk, Disk::EMPTY) {
+                //            dbg!(_disk, current_disk, in_a_row);
+                if variant_eq(current_disk, _disk) && !variant_eq(_disk, &Disk::EMPTY) {
                     // add in a row by 1
                     in_a_row += 1;
+                    //               dbg!(current_index);
                     //go to next element
                     match direction {
-                        Direction::BACKWARD => {
+                        Direction::DOWN => {
                             if current_index.0 == 0 {
                                 break;
                             }
-                            current_index.0 -= 1;
+                            current_index = dec_row(&current_index, 1);
                         }
-                        Direction::FORWARD => {
+                        Direction::UP => {
                             if current_index.0 == board.num_rows() - 1 {
                                 break;
                             }
-                            current_index.0 += 1;
+                            current_index = inc_row(&current_index, 1);
+                        }
+                        Direction::LEFT => {
+                            if current_index.1 == 0 {
+                                break;
+                            }
+                            current_index = dec_col(&current_index, 1);
+                            //    current_index.1 -= 1;
+                        }
+                        Direction::RIGHT => {
+                            if current_index.1 == board.num_columns() - 1 {
+                                break;
+                            }
+                            current_index = inc_col(&current_index, 1);
+                            //    current_index.1 += 1;
+                        }
+                        Direction::UPRIGHT => {
+                            if current_index.0 == board.num_rows() - 1
+                                || current_index.1 == board.num_columns() - 1
+                            {
+                                break;
+                            }
+                            current_index = inc_both(&current_index, 1);
+                            //    current_index.1 += 1;
+                            //    current_index.0 += 1;
+                        }
+                        Direction::UPLEFT => {
+                            if current_index.0 == board.num_columns() - 1 || current_index.1 == 0 {
+                                break;
+                            }
+
+                            //    current_index.1 -= 1;
+                            //    current_index.0 += 1;
+                            current_index = inc_dec(&current_index, 1);
+                        }
+                        Direction::DOWNRIGHT => {
+                            if current_index.0 == 0 || current_index.1 == board.num_columns() - 1 {
+                                break;
+                            }
+                            current_index = dec_inc(&current_index, 1);
+                            //    current_index.1 += 1;
+                            //    current_index.0 -= 1;
+                        }
+                        Direction::DOWNLEFT => {
+                            if current_index.0 == 0 || current_index.1 == 0 {
+                                break;
+                            }
+                            current_index = dec_both(&current_index, 1);
                         }
                     }
                 } else {
@@ -36,32 +96,73 @@ pub fn one_direction(board: &Array2D<Disk>, index: &(usize, usize), direction: D
             None => break,
         }
     }
-    if in_a_row == 4 {
-        //score added
-        return 1;
-    } else {
-        return 0;
-    }
-    //+-3
+    in_a_row
+    //    //+-3
 }
 // board[(2,3)];
-
-pub fn two_direction(board: &Array2D<Disk>, index: &(usize, usize)) -> i32 {
-    let current_disk = board.get(index.0, index.1);
-    unimplemented!()
-    //+-1 -+2
+pub fn get_legal_moves(
+    (row, col): &(usize, usize),
+    (nrow, ncol): (usize, usize),
+) -> Vec<Direction> {
+    let _max_col = nrow - 1;
+    let _max_row = ncol - 1;
+    let mut moves: Vec<Direction> = vec![];
+    match *col {
+        0 => moves.push(Direction::UP),
+        _max_row => moves.push(Direction::DOWN),
+        _ => {
+            moves.push(Direction::UP);
+            moves.push(Direction::DOWN);
+        }
+    };
+    match *row {
+        0 => moves.push(Direction::RIGHT),
+        _max_row => moves.push(Direction::LEFT),
+        _ => {
+            moves.push(Direction::LEFT);
+            moves.push(Direction::RIGHT)
+        }
+    };
+    if moves.contains(&Direction::UP) && moves.contains(&Direction::LEFT) {
+        moves.push(Direction::UPLEFT);
+    }
+    if moves.contains(&Direction::UP) && moves.contains(&Direction::RIGHT) {
+        moves.push(Direction::UPRIGHT);
+    }
+    if moves.contains(&Direction::DOWN) && moves.contains(&Direction::LEFT) {
+        moves.push(Direction::DOWNLEFT);
+    }
+    if moves.contains(&Direction::DOWN) && moves.contains(&Direction::RIGHT) {
+        moves.push(Direction::DOWNRIGHT);
+    }
+    moves
 }
-//1 == number
-//dbg!()
-//println!()
-//matches!()
-//assert!()
 
-// for _num 0..n {}
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Direction {
     UP,
     DOWN,
-    FORWARD,
-    BACKWARD,
-    //TODO add more directions for diagonals
+    LEFT,
+    RIGHT,
+    UPLEFT,
+    UPRIGHT,
+    DOWNLEFT,
+    DOWNRIGHT,
+}
+// serves nothing except do what matches!() should have done all along
+// matches works too I'm just dumb
+pub fn variant_eq<T>(a: &T, b: &T) -> bool {
+    std::mem::discriminant(a) == std::mem::discriminant(b)
+}
+pub fn flip_direction(direction: Direction) -> Direction {
+    match direction {
+        Direction::UP => Direction::DOWN,
+        Direction::DOWN => Direction::UP,
+        Direction::LEFT => Direction::RIGHT,
+        Direction::RIGHT => Direction::LEFT,
+        Direction::UPLEFT => Direction::DOWNRIGHT,
+        Direction::UPRIGHT => Direction::DOWNLEFT,
+        Direction::DOWNLEFT => Direction::UPRIGHT,
+        Direction::DOWNRIGHT => Direction::UPLEFT,
+    }
 }
