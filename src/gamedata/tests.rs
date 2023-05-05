@@ -18,10 +18,8 @@ fn play() {
     assert_eq!(1, board.blu_score);
     assert!(board.play(Disk::BLU, 0));
     assert!(board.play(Disk::BLU, 0));
-    assert!(board.play(Disk::BLU, 0));
     assert!(!board.play(Disk::BLU, 0));
 
-    assert!(board.play(Disk::BLU, 1));
     assert!(board.play(Disk::BLU, 1));
     assert!(board.play(Disk::BLU, 1));
     assert!(board.play(Disk::BLU, 1));
@@ -36,10 +34,8 @@ fn play() {
     assert!(board.play(Disk::BLU, 2));
     assert!(board.play(Disk::BLU, 2));
     assert!(board.play(Disk::BLU, 2));
-    assert!(board.play(Disk::BLU, 2));
     assert!(!board.play(Disk::BLU, 2));
 
-    assert!(board.play(Disk::BLU, 3));
     assert!(board.play(Disk::BLU, 3));
     assert!(board.play(Disk::BLU, 3));
     assert!(board.play(Disk::BLU, 3));
