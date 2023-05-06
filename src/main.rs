@@ -32,14 +32,13 @@ fn main() {
     let square_heif = board_texture.height / NCOL;
     let square_wewant = (square_widf * NROW / 2, square_heif * 3 / 2);
     let square_center = square_widf / 2;
+    //7,9 are the values to center the circle
 
     rl.set_target_fps(60);
     while !rl.window_should_close() {
         let pressed_key = rl.get_key_pressed();
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::WHITE);
-        //d.draw_circle_gradient(240, 240, 100 as f32, Color::ORANGE, Color::RED);
-        d.draw_circle(square_wewant.0, square_wewant.1, 55.0, Color::YELLOW);
         d.draw_texture(&circle_texture, 7, 9, Color::VIOLET);
         d.draw_texture(&board_texture, 0, 0, Color::VIOLET);
         if let Some(pressed_key) = pressed_key {
