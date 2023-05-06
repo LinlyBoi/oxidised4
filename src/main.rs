@@ -6,18 +6,28 @@ fn main() {
 
     let _rust_orange = Color::new(222, 165, 132, 255);
     let _ray_white = Color::new(255, 255, 255, 255);
+    //images
     let board_image = Image::load_image("resouces/board.png").expect("WHAT DA HAILLL");
     let _ = rl
         .load_texture(&thread, "resouces/board.png")
         .expect("couldn't load texture :(");
 
+    let _ = rl
+        .load_texture(&thread, "resouces/bracc.png")
+        .expect("couldn't load texture :(");
+
+    let circle_image = Image::load_image("resouces/bracc.png").expect("WHAT DA HAILLL");
+    let _ = rl
+        .load_texture(&thread, "resouces/bracc.png")
+        .expect("couldn't load texture :(");
+    //textures
     let board_texture = rl
         .load_texture_from_image(&thread, &board_image)
         .expect("WHAT DA HAILL");
-    println!(
-        "width: {} \n height: {}.",
-        board_texture.width, board_texture.height
-    );
+
+    let circle_texture = rl
+        .load_texture_from_image(&thread, &circle_image)
+        .expect("WHAT DA HAILL");
     let square_widf = board_texture.width / NROW;
     let square_heif = board_texture.height / NCOL;
     let square_wewant = (square_widf * NROW / 2, square_heif * 3 / 2);
@@ -30,6 +40,7 @@ fn main() {
         d.clear_background(Color::WHITE);
         //d.draw_circle_gradient(240, 240, 100 as f32, Color::ORANGE, Color::RED);
         d.draw_circle(square_wewant.0, square_wewant.1, 55.0, Color::YELLOW);
+        d.draw_texture(&circle_texture, 7, 9, Color::VIOLET);
         d.draw_texture(&board_texture, 0, 0, Color::VIOLET);
         if let Some(pressed_key) = pressed_key {
             // Certain keyboards may have keys raylib does not expect. Uncomment this line if so.
