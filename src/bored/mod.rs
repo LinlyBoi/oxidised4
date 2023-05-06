@@ -3,16 +3,16 @@ use crate::gamedata::{Board, Disk};
 #[cfg(test)]
 mod tests;
 pub struct GameState {
-    circles: Vec<(i32, i32, Disk)>,
-    empty: Vec<i32>,
-    player_turn: bool,
-    board: Board,
+    pub circles: Vec<(i32, i32, Disk)>,
+    pub bottom: Vec<i32>,
+    pub player_turn: bool,
+    pub board: Board,
 }
 impl Default for GameState {
     fn default() -> Self {
         Self {
             circles: vec![],
-            empty: vec![],
+            bottom: vec![],
             player_turn: false,
             board: Board::default(),
         }
