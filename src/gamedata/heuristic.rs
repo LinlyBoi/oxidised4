@@ -24,7 +24,7 @@ pub fn get_score(board: &Board, disk: Disk) -> i32 {
     potential_streaks(&sequences, &disk) + potential_wins(&sequences, &disk) + score * SCORE_DIFF
 }
 fn potential_wins(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
-    let count: i32 = sequences.iter().count() as i32;
+    let count: i32 = sequences.len() as i32;
     // for win in sequences {
     //     if win
     //         .iter()
@@ -70,7 +70,7 @@ fn get_streaks(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
     for index in empty_indices {
         let moves = get_legal_moves(&index, (board.num_rows(), board.num_columns()));
         for direction in moves {
-            let mut sequence = heur_scan(&board, &index, direction.clone(), 4, *player_disk);
+            let sequence = heur_scan(board, &index, direction.clone(), 4, *player_disk);
             //dbg!(&index, &direction, &poopy);
             match sequence
                 .iter()
@@ -95,7 +95,7 @@ fn get_wins(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
         for direction in moves {
             let mut win: Vec<Disk> = Vec::with_capacity(4);
             win.append(&mut heur_scan(
-                &board,
+                board,
                 &index,
                 direction.clone(),
                 4,
@@ -115,7 +115,7 @@ fn get_wins(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
                     }
                     let opp_direction = flip_direction(direction.clone());
                     let mut opp_sequence = heur_scan(
-                        &board,
+                        board,
                         &index,
                         opp_direction,
                         (4 - win.len() + 1) as i32,
@@ -157,31 +157,31 @@ fn heur_scan(
                     //               dbg!(current_index);
                     //go to next element
                     match direction {
-                        Direction::DOWN => {
+                        Direction::Down => {
                             if current_index.0 == 0 {
                                 break;
                             }
                             current_index = dec_row(&current_index, 1);
                         }
-                        Direction::UP => {
+                        Direction::Up => {
                             if current_index.0 == board.num_rows() - 1 {
                                 break;
                             }
                             current_index = inc_row(&current_index, 1);
                         }
-                        Direction::LEFT => {
+                        Direction::Left => {
                             if current_index.1 == 0 {
                                 break;
                             }
                             current_index = dec_col(&current_index, 1);
                         }
-                        Direction::RIGHT => {
+                        Direction::Right => {
                             if current_index.1 == board.num_columns() - 1 {
                                 break;
                             }
                             current_index = inc_col(&current_index, 1);
                         }
-                        Direction::UPRIGHT => {
+                        Direction::UpRight => {
                             if current_index.0 == board.num_rows() - 1
                                 || current_index.1 == board.num_columns() - 1
                             {
@@ -189,20 +189,20 @@ fn heur_scan(
                             }
                             current_index = inc_both(&current_index, 1);
                         }
-                        Direction::UPLEFT => {
+                        Direction::UpLeft => {
                             if current_index.0 == board.num_columns() - 1 || current_index.1 == 0 {
                                 break;
                             }
 
                             current_index = inc_dec(&current_index, 1);
                         }
-                        Direction::DOWNRIGHT => {
+                        Direction::DownRight => {
                             if current_index.0 == 0 || current_index.1 == board.num_columns() - 1 {
                                 break;
                             }
                             current_index = dec_inc(&current_index, 1);
                         }
-                        Direction::DOWNLEFT => {
+                        Direction::DownLeft => {
                             if current_index.0 == 0 || current_index.1 == 0 {
                                 break;
                             }
@@ -233,7 +233,7 @@ fn streak_test_1() {
     let sequences = get_streaks(&board.columns, &Disk::BLU);
     assert_eq!(18, potential_streaks(&sequences, &Disk::BLU));
     board.play(Disk::BLU, 0);
-    let sequences = get_streaks(&board.columns, &Disk::BLU);
+    let _sequences = get_streaks(&board.columns, &Disk::BLU);
     board.play(Disk::BLU, 3);
     board.play(Disk::BLU, 3);
     board.play(Disk::BLU, 3);

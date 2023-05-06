@@ -10,9 +10,8 @@ pub fn scan(
     direction: Direction,
     depth: i32,
 ) -> i32 {
-    let current_disk: &Disk;
-    match board.get(index.0, index.1) {
-        Some(disk) => current_disk = disk,
+    let current_disk: &Disk = match board.get(index.0, index.1) {
+        Some(disk) => disk,
         None => return 0,
     };
     let mut current_index = *index;
@@ -28,33 +27,33 @@ pub fn scan(
                     //               dbg!(current_index);
                     //go to next element
                     match direction {
-                        Direction::DOWN => {
+                        Direction::Down => {
                             if current_index.0 == 0 {
                                 break;
                             }
                             current_index = dec_row(&current_index, 1);
                         }
-                        Direction::UP => {
+                        Direction::Up => {
                             if current_index.0 == board.num_rows() - 1 {
                                 break;
                             }
                             current_index = inc_row(&current_index, 1);
                         }
-                        Direction::LEFT => {
+                        Direction::Left => {
                             if current_index.1 == 0 {
                                 break;
                             }
                             current_index = dec_col(&current_index, 1);
                             //    current_index.1 -= 1;
                         }
-                        Direction::RIGHT => {
+                        Direction::Right => {
                             if current_index.1 == board.num_columns() - 1 {
                                 break;
                             }
                             current_index = inc_col(&current_index, 1);
                             //    current_index.1 += 1;
                         }
-                        Direction::UPRIGHT => {
+                        Direction::UpRight => {
                             if current_index.0 == board.num_rows() - 1
                                 || current_index.1 == board.num_columns() - 1
                             {
@@ -64,7 +63,7 @@ pub fn scan(
                             //    current_index.1 += 1;
                             //    current_index.0 += 1;
                         }
-                        Direction::UPLEFT => {
+                        Direction::UpLeft => {
                             if current_index.0 == board.num_columns() - 1 || current_index.1 == 0 {
                                 break;
                             }
@@ -73,7 +72,7 @@ pub fn scan(
                             //    current_index.0 += 1;
                             current_index = inc_dec(&current_index, 1);
                         }
-                        Direction::DOWNRIGHT => {
+                        Direction::DownRight => {
                             if current_index.0 == 0 || current_index.1 == board.num_columns() - 1 {
                                 break;
                             }
@@ -81,7 +80,7 @@ pub fn scan(
                             //    current_index.1 += 1;
                             //    current_index.0 -= 1;
                         }
-                        Direction::DOWNLEFT => {
+                        Direction::DownLeft => {
                             if current_index.0 == 0 || current_index.1 == 0 {
                                 break;
                             }
@@ -108,46 +107,46 @@ pub fn get_legal_moves(
     let _max_row = ncol - 1;
     let mut moves: Vec<Direction> = vec![];
     match *col {
-        0 => moves.push(Direction::UP),
-        _max_row => moves.push(Direction::DOWN),
+        0 => moves.push(Direction::Up),
+        _max_row => moves.push(Direction::Down),
         _ => {
-            moves.push(Direction::UP);
-            moves.push(Direction::DOWN);
+            moves.push(Direction::Up);
+            moves.push(Direction::Down);
         }
     };
     match *row {
-        0 => moves.push(Direction::RIGHT),
-        _max_row => moves.push(Direction::LEFT),
+        0 => moves.push(Direction::Right),
+        _max_row => moves.push(Direction::Left),
         _ => {
-            moves.push(Direction::LEFT);
-            moves.push(Direction::RIGHT)
+            moves.push(Direction::Left);
+            moves.push(Direction::Right)
         }
     };
-    if moves.contains(&Direction::UP) && moves.contains(&Direction::LEFT) {
-        moves.push(Direction::UPLEFT);
+    if moves.contains(&Direction::Up) && moves.contains(&Direction::Left) {
+        moves.push(Direction::UpLeft);
     }
-    if moves.contains(&Direction::UP) && moves.contains(&Direction::RIGHT) {
-        moves.push(Direction::UPRIGHT);
+    if moves.contains(&Direction::Up) && moves.contains(&Direction::Right) {
+        moves.push(Direction::UpRight);
     }
-    if moves.contains(&Direction::DOWN) && moves.contains(&Direction::LEFT) {
-        moves.push(Direction::DOWNLEFT);
+    if moves.contains(&Direction::Down) && moves.contains(&Direction::Left) {
+        moves.push(Direction::DownLeft);
     }
-    if moves.contains(&Direction::DOWN) && moves.contains(&Direction::RIGHT) {
-        moves.push(Direction::DOWNRIGHT);
+    if moves.contains(&Direction::Down) && moves.contains(&Direction::Right) {
+        moves.push(Direction::DownRight);
     }
     moves
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    UPLEFT,
-    UPRIGHT,
-    DOWNLEFT,
-    DOWNRIGHT,
+    Up,
+    Down,
+    Left,
+    Right,
+    UpLeft,
+    UpRight,
+    DownLeft,
+    DownRight,
 }
 // serves nothing except do what matches!() should have done all along
 // matches works too I'm just dumb
@@ -156,13 +155,13 @@ pub fn variant_eq<T>(a: &T, b: &T) -> bool {
 }
 pub fn flip_direction(direction: Direction) -> Direction {
     match direction {
-        Direction::UP => Direction::DOWN,
-        Direction::DOWN => Direction::UP,
-        Direction::LEFT => Direction::RIGHT,
-        Direction::RIGHT => Direction::LEFT,
-        Direction::UPLEFT => Direction::DOWNRIGHT,
-        Direction::UPRIGHT => Direction::DOWNLEFT,
-        Direction::DOWNLEFT => Direction::UPRIGHT,
-        Direction::DOWNRIGHT => Direction::UPLEFT,
+        Direction::Up => Direction::Down,
+        Direction::Down => Direction::Up,
+        Direction::Left => Direction::Right,
+        Direction::Right => Direction::Left,
+        Direction::UpLeft => Direction::DownRight,
+        Direction::UpRight => Direction::DownLeft,
+        Direction::DownLeft => Direction::UpRight,
+        Direction::DownRight => Direction::UpLeft,
     }
 }

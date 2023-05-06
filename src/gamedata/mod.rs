@@ -34,11 +34,11 @@ impl Board {
         (self.red_score, self.blu_score)
     }
     fn play(&mut self, disk: Disk, col: usize) -> bool {
-        let column = &self.columns.as_columns()[col as usize];
+        let column = &self.columns.as_columns()[col];
         let empty = column.iter().filter(|&a| matches!(a, Disk::EMPTY)).count();
         // dbg!(empty);
         let top = column.len() - empty;
-        match self.columns.set(top, col as usize, disk) {
+        match self.columns.set(top, col, disk) {
             Ok(_) => {
                 self.score_check((top, col));
                 self.last_move = col;
@@ -87,9 +87,9 @@ impl Board {
                         }
                     }
                 }
-                Disk::EMPTY => return,
+                Disk::EMPTY => (),
             },
-            None => return,
+            None => (),
         }
     }
     fn game_over(&self) -> bool {
