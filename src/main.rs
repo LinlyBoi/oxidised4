@@ -1,6 +1,9 @@
 use oxidised4::{
-    bored::PlayState,
-    gamedata::{algorithms::minimax_decision_pruning, Disk},
+    bored::{GameState, MenuState, PlayState, Strategy},
+    gamedata::{
+        algorithms::{minimax_decision, minimax_decision_pruning},
+        Disk,
+    },
 };
 use raylib::prelude::*;
 const NROW: i32 = 6;
@@ -36,46 +39,57 @@ fn main() {
     let _square_wewant = (square_widf * NROW / 2, square_heif * 3 / 2);
     let _square_center = square_widf / 2;
     //7,9 are the values to center the circle
-    let mut state: PlayState = PlayState::default();
+    let mut state: GameState = GameState::MainMenu(MenuState::default());
+    let mut strategy = Strategy::MiniMax;
+    let mut difficulty = 3;
 
     rl.set_target_fps(60);
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
-        match state.player_turn {
-            true => {
-                if d.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
-                    if let Some(column) = get_mouse_column(&d, square_widf) {
-                        state.play_human(column);
-                    }
+        match &mut state {
+            GameState::MainMenu(ref mut mstate) => {
+                if mstate.init(&d) {
+                    strategy = mstate.strategy.clone();
+                    difficulty = mstate.difficulty.clone();
+                    state = GameState::Play(PlayState::default());
                 }
             }
-            false => state.play_cpu(minimax_decision_pruning),
-        }
-        if state.board.game_over() {
-            let scores = state.board.getscore();
-            println!("Player score: {} \n CPU Score: {}", scores.0, scores.1);
-        }
+            GameState::Play(ref mut state) => {
+                match state.player_turn {
+                    true => {
+                        if d.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
+                            if let Some(column) = get_mouse_column(&d, square_widf) {
+                                state.play_human(column);
+                            }
+                        }
+                    }
+                    false => match strategy {
+                        Strategy::MiniMax => state.play_cpu(minimax_decision),
+                        Strategy::AlphaBeta => state.play_cpu(minimax_decision_pruning),
+                    },
+                }
+                if state.board.game_over() {
+                    let scores = state.board.getscore();
+                    println!("Player score: {} \n CPU Score: {}", scores.0, scores.1);
+                }
 
-        for circle in &state.circles {
-            let (x, y, disk) = circle;
-            let color = match disk {
-                Disk::P1 => Color::RED,
-                Disk::P2 => Color::YELLOW,
-                Disk::EMPTY => Color::WHITE,
-            };
-            d.draw_texture(&circle_texture, *x, *y, color);
+                for circle in state.clone().circles {
+                    let (x, y, disk) = circle;
+                    let color = match disk {
+                        Disk::P1 => Color::RED,
+                        Disk::P2 => Color::YELLOW,
+                        Disk::EMPTY => Color::WHITE,
+                    };
+                    d.draw_texture(&circle_texture, x, y, color);
+                }
+                d.clear_background(Color::WHITE);
+                d.draw_texture(&board_texture, BOARDSTART.0, BOARDSTART.1, Color::VIOLET);
+            }
         }
-        d.clear_background(Color::WHITE);
-        d.draw_texture(&board_texture, BOARDSTART.0, BOARDSTART.1, Color::VIOLET);
     }
 }
 
-//TODO move this to a struct
-pub const STARTY: i32 = 9;
-pub const STARTX: i32 = 7;
-const WX: i32 = 14;
-const WY: i32 = 14;
-const CIRCLEWIDTH: i32 = 56;
+const STARTY: i32 = 9;
 fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> Option<i32> {
     //row,col return
     let mouse_pos = rl.get_mouse_x();

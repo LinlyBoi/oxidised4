@@ -11,7 +11,6 @@ const POT_STREAKS: i32 = 4;
 const POT_WIN: i32 = 5; // should be nerfed if its just 1 potential win
 const POT_WINS: i32 = 6;
 const SCORE_DIFF: i32 = 40;
-const MAX_WINS: i32 = 17;
 
 pub fn get_score(board: &Board, disk: Disk) -> i32 {
     //this should be summing up a bunch of functions defined below this one
@@ -239,7 +238,7 @@ fn streak_test_1() {
     board.play(Disk::P2, 3);
     board.play(Disk::P2, 3);
     let sequences = get_streaks(&board.columns, &Disk::P2);
-    assert_eq!(12, potential_streaks(&sequences, &Disk::P2));
+    assert_eq!(POT_STREAKS * 2, potential_streaks(&sequences, &Disk::P2));
 }
 #[test]
 fn win_test_flipping() {
