@@ -50,6 +50,7 @@ fn main() {
     }
 }
 
+//TODO move this to a struct
 const STARTX: i32 = 7;
 const STARTY: i32 = 9;
 const WX: i32 = 13;
