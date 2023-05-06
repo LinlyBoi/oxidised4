@@ -1,4 +1,4 @@
-use oxidised4::{bored::GameState, gamedata::Disk};
+use oxidised4::{bored::PlayState, gamedata::Disk};
 use raylib::prelude::*;
 const NROW: i32 = 6;
 const NCOL: i32 = 7;
@@ -33,7 +33,7 @@ fn main() {
     let _square_wewant = (square_widf * NROW / 2, square_heif * 3 / 2);
     let _square_center = square_widf / 2;
     //7,9 are the values to center the circle
-    let mut state: GameState = GameState::default();
+    let mut state: PlayState = PlayState::default();
 
     rl.set_target_fps(60);
     while !rl.window_should_close() {
@@ -41,13 +41,13 @@ fn main() {
         if d.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
             let column = get_mouse_column(&d, square_widf);
             let coords = get_circle_coords(1, column);
-            state.circles.push((coords.1, coords.0, Disk::RED));
+            state.circles.push((coords.1, coords.0, Disk::P1));
         }
         for circle in &state.circles {
             let (x, y, disk) = circle;
             let color = match disk {
-                Disk::RED => Color::RED,
-                Disk::BLU => Color::BLUE,
+                Disk::P1 => Color::RED,
+                Disk::P2 => Color::BLUE,
                 Disk::EMPTY => Color::WHITE,
             };
             d.draw_texture(&circle_texture, *x, *y, color);
