@@ -1,15 +1,15 @@
 pub fn inc_row((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row + value as usize, *col)
+    (row + value, *col)
 }
 pub fn inc_col((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (*row, col + value as usize)
+    (*row, col + value)
 }
 
 pub fn dec_row((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (row - value as usize, *col)
+    (row - value, *col)
 }
 pub fn dec_col((row, col): &(usize, usize), value: usize) -> (usize, usize) {
-    (*row, col - value as usize)
+    (*row, col - value)
 }
 pub fn inc_both((row, col): &(usize, usize), value: usize) -> (usize, usize) {
     (row + value, col + value)

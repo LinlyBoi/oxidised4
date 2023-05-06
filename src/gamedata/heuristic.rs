@@ -6,25 +6,24 @@ use super::{
     Board, Disk,
 };
 //multipliers
-const POT_STREAK: i32 = 4; //one streak is kind of poopy
-const POT_STREAKS: i32 = 6;
+const POT_STREAK: i32 = 3; //one streak is kind of poopy
+const POT_STREAKS: i32 = 4;
 const POT_WIN: i32 = 5; // should be nerfed if its just 1 potential win
-const POT_WINS: i32 = 8;
-const SCORE_DIFF: i32 = 6;
-const MAX_WINS: i32 = 17;
+const POT_WINS: i32 = 6;
+const SCORE_DIFF: i32 = 40;
 
 pub fn get_score(board: &Board, disk: Disk) -> i32 {
     //this should be summing up a bunch of functions defined below this one
     let sequences = get_streaks(&board.columns, &disk);
     let score: i32 = match disk {
-        Disk::RED => board.red_score - board.blu_score,
-        Disk::BLU => board.blu_score - board.red_score,
+        Disk::P1 => board.p1_score - board.p2_score,
+        Disk::P2 => board.p2_score - board.p1_score,
         Disk::EMPTY => panic!("Why would you ever"),
     };
     potential_streaks(&sequences, &disk) + potential_wins(&sequences, &disk) + score * SCORE_DIFF
 }
 fn potential_wins(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
-    let count: i32 = sequences.iter().count() as i32;
+    let count: i32 = sequences.len() as i32;
     // for win in sequences {
     //     if win
     //         .iter()
@@ -70,7 +69,7 @@ fn get_streaks(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
     for index in empty_indices {
         let moves = get_legal_moves(&index, (board.num_rows(), board.num_columns()));
         for direction in moves {
-            let mut sequence = heur_scan(&board, &index, direction.clone(), 4, *player_disk);
+            let sequence = heur_scan(board, &index, direction.clone(), 4, *player_disk);
             //dbg!(&index, &direction, &poopy);
             match sequence
                 .iter()
@@ -95,7 +94,7 @@ fn get_wins(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
         for direction in moves {
             let mut win: Vec<Disk> = Vec::with_capacity(4);
             win.append(&mut heur_scan(
-                &board,
+                board,
                 &index,
                 direction.clone(),
                 4,
@@ -115,7 +114,7 @@ fn get_wins(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
                     }
                     let opp_direction = flip_direction(direction.clone());
                     let mut opp_sequence = heur_scan(
-                        &board,
+                        board,
                         &index,
                         opp_direction,
                         (4 - win.len() + 1) as i32,
@@ -157,31 +156,31 @@ fn heur_scan(
                     //               dbg!(current_index);
                     //go to next element
                     match direction {
-                        Direction::DOWN => {
+                        Direction::Down => {
                             if current_index.0 == 0 {
                                 break;
                             }
                             current_index = dec_row(&current_index, 1);
                         }
-                        Direction::UP => {
+                        Direction::Up => {
                             if current_index.0 == board.num_rows() - 1 {
                                 break;
                             }
                             current_index = inc_row(&current_index, 1);
                         }
-                        Direction::LEFT => {
+                        Direction::Left => {
                             if current_index.1 == 0 {
                                 break;
                             }
                             current_index = dec_col(&current_index, 1);
                         }
-                        Direction::RIGHT => {
+                        Direction::Right => {
                             if current_index.1 == board.num_columns() - 1 {
                                 break;
                             }
                             current_index = inc_col(&current_index, 1);
                         }
-                        Direction::UPRIGHT => {
+                        Direction::UpRight => {
                             if current_index.0 == board.num_rows() - 1
                                 || current_index.1 == board.num_columns() - 1
                             {
@@ -189,20 +188,20 @@ fn heur_scan(
                             }
                             current_index = inc_both(&current_index, 1);
                         }
-                        Direction::UPLEFT => {
+                        Direction::UpLeft => {
                             if current_index.0 == board.num_columns() - 1 || current_index.1 == 0 {
                                 break;
                             }
 
                             current_index = inc_dec(&current_index, 1);
                         }
-                        Direction::DOWNRIGHT => {
+                        Direction::DownRight => {
                             if current_index.0 == 0 || current_index.1 == board.num_columns() - 1 {
                                 break;
                             }
                             current_index = dec_inc(&current_index, 1);
                         }
-                        Direction::DOWNLEFT => {
+                        Direction::DownLeft => {
                             if current_index.0 == 0 || current_index.1 == 0 {
                                 break;
                             }
@@ -225,44 +224,44 @@ fn heur_scan(
 #[test]
 fn streak_test_1() {
     let mut board = Board::default();
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 2);
-    board.play(Disk::BLU, 1);
-    let sequences = get_streaks(&board.columns, &Disk::BLU);
-    assert_eq!(18, potential_streaks(&sequences, &Disk::BLU));
-    board.play(Disk::BLU, 0);
-    let sequences = get_streaks(&board.columns, &Disk::BLU);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    let sequences = get_streaks(&board.columns, &Disk::BLU);
-    assert_eq!(12, potential_streaks(&sequences, &Disk::BLU));
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 2);
+    board.play(Disk::P2, 1);
+    let sequences = get_streaks(&board.columns, &Disk::P2);
+    assert_eq!(POT_STREAKS * 3, potential_streaks(&sequences, &Disk::P2));
+    board.play(Disk::P2, 0);
+    let _sequences = get_streaks(&board.columns, &Disk::P2);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    let sequences = get_streaks(&board.columns, &Disk::P2);
+    assert_eq!(POT_STREAKS * 2, potential_streaks(&sequences, &Disk::P2));
 }
 #[test]
 fn win_test_flipping() {
     let mut board = Board::default();
-    board.play(Disk::BLU, 3);
-    board.play(Disk::RED, 4);
-    board.play(Disk::BLU, 4);
-    board.play(Disk::RED, 5);
-    board.play(Disk::RED, 5);
-    board.play(Disk::RED, 6);
-    board.play(Disk::RED, 6);
-    board.play(Disk::RED, 6);
-    board.play(Disk::BLU, 6);
-    let sequences = get_wins(&board.columns, &Disk::BLU);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P1, 4);
+    board.play(Disk::P2, 4);
+    board.play(Disk::P1, 5);
+    board.play(Disk::P1, 5);
+    board.play(Disk::P1, 6);
+    board.play(Disk::P1, 6);
+    board.play(Disk::P1, 6);
+    board.play(Disk::P2, 6);
+    let sequences = get_wins(&board.columns, &Disk::P2);
     dbg!(&sequences);
-    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::BLU));
+    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::P2));
 }
 #[test]
 fn win_test_flipping_hard() {
     let mut board = Board::default();
-    board.play(Disk::BLU, 1);
-    board.play(Disk::BLU, 2);
-    board.play(Disk::BLU, 4);
-    let sequences = get_wins(&board.columns, &Disk::BLU);
-    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::BLU));
+    board.play(Disk::P2, 1);
+    board.play(Disk::P2, 2);
+    board.play(Disk::P2, 4);
+    let sequences = get_wins(&board.columns, &Disk::P2);
+    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::P2));
 }
