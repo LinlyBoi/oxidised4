@@ -39,8 +39,9 @@ fn main() {
     while !rl.window_should_close() {
         let pressed_key = rl.get_key_pressed();
         let mut d = rl.begin_drawing(&thread);
+        let (x, y) = get_circle_coords(7, 2);
         d.clear_background(Color::WHITE);
-        d.draw_texture(&circle_texture, 7, 350, Color::VIOLET);
+        d.draw_texture(&circle_texture, x, y, Color::VIOLET);
         d.draw_texture(&board_texture, 0, 0, Color::VIOLET);
         if let Some(pressed_key) = pressed_key {
             // Certain keyboards may have keys raylib does not expect. Uncomment this line if so.
@@ -53,8 +54,7 @@ fn main() {
 //TODO move this to a struct
 const STARTX: i32 = 7;
 const STARTY: i32 = 9;
-const WX: i32 = 13;
-const WY: i32 = 15;
+const WX: i32 = 15;
 const CIRCLEWIDTH: i32 = 55;
 fn get_circle_coords(row: i32, column: i32) -> (i32, i32) {
     let mut returned: (i32, i32) = (STARTX, STARTY);
@@ -67,7 +67,7 @@ fn get_circle_coords(row: i32, column: i32) -> (i32, i32) {
     match column {
         1 => {}
         _ => {
-            returned.0 = STARTY + (CIRCLEWIDTH * (column - 1)) + (WY * (column - 1));
+            returned.1 = STARTY + (CIRCLEWIDTH * (column - 1)) + (WX * (column - 1));
         }
     };
     returned
