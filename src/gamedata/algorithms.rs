@@ -8,7 +8,7 @@ pub fn minimax_decision(board: &Board, disk: Disk, depth: &i32) -> Board {
 }
 fn maximise(board: &Board, disk: &Disk, depth: &i32) -> (Option<Board>, i32) {
     match board.game_over() || *depth == 0 {
-        true => return (None, get_score(board, flip_disk(*disk))),
+        true => return (None, get_score(board, *disk)),
         false => {
             let (mut max_child, mut max_utility): (Option<Board>, i32) = (None, i32::MIN);
             for child in board.get_children(*disk) {
@@ -25,10 +25,10 @@ fn minimise(board: &Board, disk: &Disk, depth: &i32) -> (Option<Board>, i32) {
     match board.game_over() || *depth == 0 {
         true => return (None, get_score(board, flip_disk(*disk))),
         false => {
-            let (mut min_child, mut min_utility): (Option<Board>, i32) = (None, i32::MIN);
+            let (mut min_child, mut min_utility): (Option<Board>, i32) = (None, i32::MAX);
             for child in board.get_children(*disk) {
                 let (_, utility) = maximise(&child, &flip_disk(*disk), &(depth - 1));
-                if utility > min_utility {
+                if utility < min_utility {
                     (min_child, min_utility) = (Some(child), utility)
                 }
             }
@@ -39,6 +39,26 @@ fn minimise(board: &Board, disk: &Disk, depth: &i32) -> (Option<Board>, i32) {
 #[test]
 fn minimax_test() {
     let mut board = Board::default();
-    dbg!(minimax_decision(&board, Disk::BLU, &5).columns.as_rows());
+    let mut disk = Disk::BLU;
+    let depth = 5;
+    let turn1 = board.play(disk, minimax_decision(&board, disk, &5).last_move);
+    disk = flip_disk(disk);
+    let turn2 = board.play(disk, minimax_decision(&board, disk, &5).last_move);
+    disk = flip_disk(disk);
+    let turn3 = board.play(disk, minimax_decision(&board, disk, &5).last_move);
+    disk = flip_disk(disk);
+    let turn4 = board.play(disk, minimax_decision(&board, disk, &5).last_move);
+    disk = flip_disk(disk);
+    let turn5 = board.play(disk, minimax_decision(&board, disk, &5).last_move);
+    for column in board.columns.as_rows() {
+        column
+            .iter()
+            .map(|x| {
+                print!("{:#?},", x);
+                x
+            })
+            .count();
+        println!("");
+    }
     assert!(false);
 }
