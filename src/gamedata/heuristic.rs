@@ -6,11 +6,11 @@ use super::{
     Board, Disk,
 };
 //multipliers
-const POT_STREAK: i32 = 4; //one streak is kind of poopy
-const POT_STREAKS: i32 = 6;
+const POT_STREAK: i32 = 3; //one streak is kind of poopy
+const POT_STREAKS: i32 = 4;
 const POT_WIN: i32 = 5; // should be nerfed if its just 1 potential win
-const POT_WINS: i32 = 8;
-const SCORE_DIFF: i32 = 6;
+const POT_WINS: i32 = 6;
+const SCORE_DIFF: i32 = 40;
 const MAX_WINS: i32 = 17;
 
 pub fn get_score(board: &Board, disk: Disk) -> i32 {
@@ -231,7 +231,7 @@ fn streak_test_1() {
     board.play(Disk::P2, 2);
     board.play(Disk::P2, 1);
     let sequences = get_streaks(&board.columns, &Disk::P2);
-    assert_eq!(18, potential_streaks(&sequences, &Disk::P2));
+    assert_eq!(POT_STREAKS * 3, potential_streaks(&sequences, &Disk::P2));
     board.play(Disk::P2, 0);
     let _sequences = get_streaks(&board.columns, &Disk::P2);
     board.play(Disk::P2, 3);

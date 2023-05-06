@@ -1,4 +1,7 @@
-use oxidised4::{bored::PlayState, gamedata::Disk};
+use oxidised4::{
+    bored::PlayState,
+    gamedata::{algorithms::minimax_decision_pruning, Disk},
+};
 use raylib::prelude::*;
 const NROW: i32 = 6;
 const NCOL: i32 = 7;
@@ -38,17 +41,26 @@ fn main() {
     rl.set_target_fps(60);
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
-        if d.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
-            if let Some(column) = get_mouse_column(&d, square_widf) {
-                let coords = get_circle_coords(1, column);
-                state.circles.push((coords.1, coords.0, Disk::P1));
+        match state.player_turn {
+            true => {
+                if d.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
+                    if let Some(column) = get_mouse_column(&d, square_widf) {
+                        state.play_human(column);
+                    }
+                }
             }
+            false => state.play_cpu(minimax_decision_pruning),
         }
+        if state.board.game_over() {
+            let scores = state.board.getscore();
+            println!("Player score: {} \n CPU Score: {}", scores.0, scores.1);
+        }
+
         for circle in &state.circles {
             let (x, y, disk) = circle;
             let color = match disk {
                 Disk::P1 => Color::RED,
-                Disk::P2 => Color::BLUE,
+                Disk::P2 => Color::YELLOW,
                 Disk::EMPTY => Color::WHITE,
             };
             d.draw_texture(&circle_texture, *x, *y, color);
@@ -59,27 +71,11 @@ fn main() {
 }
 
 //TODO move this to a struct
-const STARTY: i32 = 9;
-const STARTX: i32 = 7;
+pub const STARTY: i32 = 9;
+pub const STARTX: i32 = 7;
 const WX: i32 = 14;
 const WY: i32 = 14;
 const CIRCLEWIDTH: i32 = 56;
-fn get_circle_coords(x: i32, y: i32) -> (i32, i32) {
-    let mut returned: (i32, i32) = (STARTY, STARTX);
-    match x {
-        1 => {}
-        _ => {
-            returned.0 = STARTY + (CIRCLEWIDTH * (x - 1)) + (WX * (x - 1));
-        }
-    };
-    match y {
-        1 => {}
-        _ => {
-            returned.1 = STARTX + (CIRCLEWIDTH * (y - 1)) + (WY * (y - 1));
-        }
-    };
-    returned
-}
 fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> Option<i32> {
     //row,col return
     let mouse_pos = rl.get_mouse_x();
@@ -88,7 +84,7 @@ fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> Option<i32> {
         dbg!(mouse_pos < sw * (num) - STARTY);
         if (mouse_pos > sw * (num - 1) + STARTY) && (mouse_pos < sw * (num) - STARTY) {
             dbg!(num);
-            return Some(num);
+            return Some(num - 1);
         }
     }
     None

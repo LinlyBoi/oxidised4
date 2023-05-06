@@ -1,4 +1,4 @@
-mod algorithms;
+pub mod algorithms;
 mod heuristic;
 mod indices;
 mod score_checkers;
@@ -13,7 +13,7 @@ pub struct Board {
     p1_score: i32,
     p2_score: i32,
     columns: Array2D<Disk>,
-    last_move: usize,
+    pub last_move: i32,
 }
 
 impl Default for Board {
@@ -30,10 +30,10 @@ impl Default for Board {
 }
 
 impl Board {
-    fn getscore(&self) -> (i32, i32) {
+    pub fn getscore(&self) -> (i32, i32) {
         (self.p1_score, self.p2_score)
     }
-    fn play(&mut self, disk: Disk, col: usize) -> bool {
+    pub fn play(&mut self, disk: Disk, col: usize) -> bool {
         let column = &self.columns.as_columns()[col];
         let empty = column.iter().filter(|&a| matches!(a, Disk::EMPTY)).count();
         // dbg!(empty);
@@ -41,7 +41,8 @@ impl Board {
         match self.columns.set(top, col, disk) {
             Ok(_) => {
                 self.score_check((top, col));
-                self.last_move = col;
+                self.last_move = col as i32;
+                //dbg!(self.p1_score, self.p2_score);
                 true
             }
             Err(_) => false,
@@ -92,7 +93,7 @@ impl Board {
             None => (),
         }
     }
-    fn game_over(&self) -> bool {
+    pub fn game_over(&self) -> bool {
         self.columns
             .as_row_major()
             .iter()
