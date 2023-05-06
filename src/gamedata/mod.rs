@@ -10,8 +10,8 @@ pub use indices::*;
 
 #[derive(Clone)]
 pub struct Board {
-    red_score: i32,
-    blu_score: i32,
+    p1_score: i32,
+    p2_score: i32,
     columns: Array2D<Disk>,
     last_move: usize,
 }
@@ -21,8 +21,8 @@ impl Default for Board {
         let columns = Array2D::filled_with(Disk::EMPTY, 6, 7);
 
         Self {
-            red_score: 0,
-            blu_score: 0,
+            p1_score: 0,
+            p2_score: 0,
             columns,
             last_move: 0,
         }
@@ -31,7 +31,7 @@ impl Default for Board {
 
 impl Board {
     fn getscore(&self) -> (i32, i32) {
-        (self.red_score, self.blu_score)
+        (self.p1_score, self.p2_score)
     }
     fn play(&mut self, disk: Disk, col: usize) -> bool {
         let column = &self.columns.as_columns()[col];
@@ -55,7 +55,7 @@ impl Board {
         );
         match self.columns.get(index.0, index.1) {
             Some(disk) => match disk {
-                Disk::RED => {
+                Disk::P1 => {
                     for _move in moves {
                         let mut consecutive = scan(&self.columns, &index, _move.clone(), 4);
                         if consecutive < 4 {
@@ -67,11 +67,11 @@ impl Board {
                             )
                         }
                         if consecutive - 1 == 4 {
-                            self.red_score += 1
+                            self.p1_score += 1
                         }
                     }
                 }
-                Disk::BLU => {
+                Disk::P2 => {
                     for _move in moves {
                         let mut consecutive = scan(&self.columns, &index, _move.clone(), 4);
                         if consecutive < 4 {
@@ -83,7 +83,7 @@ impl Board {
                             )
                         }
                         if consecutive - 1 == 4 {
-                            self.blu_score += 1
+                            self.p2_score += 1
                         }
                     }
                 }
@@ -115,14 +115,14 @@ impl Board {
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Disk {
-    RED,
-    BLU,
+    P1,
+    P2,
     EMPTY,
 }
 pub fn flip_disk(disk: Disk) -> Disk {
     match disk {
-        Disk::RED => Disk::BLU,
-        Disk::BLU => Disk::RED,
+        Disk::P1 => Disk::P2,
+        Disk::P2 => Disk::P1,
         Disk::EMPTY => Disk::EMPTY, //why..just why
     }
 }

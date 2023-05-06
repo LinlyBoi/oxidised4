@@ -39,7 +39,7 @@ fn minimise(board: &Board, disk: &Disk, depth: &i32) -> (Option<Board>, i32) {
 #[test]
 fn minimax_test() {
     let mut board = Board::default();
-    let mut disk = Disk::BLU;
+    let mut disk = Disk::P2;
     let _depth = 5;
     let _turn1 = board.play(disk, minimax_decision(&board, disk, &5).last_move);
     disk = flip_disk(disk);

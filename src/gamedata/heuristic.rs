@@ -17,8 +17,8 @@ pub fn get_score(board: &Board, disk: Disk) -> i32 {
     //this should be summing up a bunch of functions defined below this one
     let sequences = get_streaks(&board.columns, &disk);
     let score: i32 = match disk {
-        Disk::RED => board.red_score - board.blu_score,
-        Disk::BLU => board.blu_score - board.red_score,
+        Disk::P1 => board.p1_score - board.p2_score,
+        Disk::P2 => board.p2_score - board.p1_score,
         Disk::EMPTY => panic!("Why would you ever"),
     };
     potential_streaks(&sequences, &disk) + potential_wins(&sequences, &disk) + score * SCORE_DIFF
@@ -225,44 +225,44 @@ fn heur_scan(
 #[test]
 fn streak_test_1() {
     let mut board = Board::default();
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 2);
-    board.play(Disk::BLU, 1);
-    let sequences = get_streaks(&board.columns, &Disk::BLU);
-    assert_eq!(18, potential_streaks(&sequences, &Disk::BLU));
-    board.play(Disk::BLU, 0);
-    let _sequences = get_streaks(&board.columns, &Disk::BLU);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    board.play(Disk::BLU, 3);
-    let sequences = get_streaks(&board.columns, &Disk::BLU);
-    assert_eq!(12, potential_streaks(&sequences, &Disk::BLU));
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 2);
+    board.play(Disk::P2, 1);
+    let sequences = get_streaks(&board.columns, &Disk::P2);
+    assert_eq!(18, potential_streaks(&sequences, &Disk::P2));
+    board.play(Disk::P2, 0);
+    let _sequences = get_streaks(&board.columns, &Disk::P2);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P2, 3);
+    let sequences = get_streaks(&board.columns, &Disk::P2);
+    assert_eq!(12, potential_streaks(&sequences, &Disk::P2));
 }
 #[test]
 fn win_test_flipping() {
     let mut board = Board::default();
-    board.play(Disk::BLU, 3);
-    board.play(Disk::RED, 4);
-    board.play(Disk::BLU, 4);
-    board.play(Disk::RED, 5);
-    board.play(Disk::RED, 5);
-    board.play(Disk::RED, 6);
-    board.play(Disk::RED, 6);
-    board.play(Disk::RED, 6);
-    board.play(Disk::BLU, 6);
-    let sequences = get_wins(&board.columns, &Disk::BLU);
+    board.play(Disk::P2, 3);
+    board.play(Disk::P1, 4);
+    board.play(Disk::P2, 4);
+    board.play(Disk::P1, 5);
+    board.play(Disk::P1, 5);
+    board.play(Disk::P1, 6);
+    board.play(Disk::P1, 6);
+    board.play(Disk::P1, 6);
+    board.play(Disk::P2, 6);
+    let sequences = get_wins(&board.columns, &Disk::P2);
     dbg!(&sequences);
-    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::BLU));
+    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::P2));
 }
 #[test]
 fn win_test_flipping_hard() {
     let mut board = Board::default();
-    board.play(Disk::BLU, 1);
-    board.play(Disk::BLU, 2);
-    board.play(Disk::BLU, 4);
-    let sequences = get_wins(&board.columns, &Disk::BLU);
-    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::BLU));
+    board.play(Disk::P2, 1);
+    board.play(Disk::P2, 2);
+    board.play(Disk::P2, 4);
+    let sequences = get_wins(&board.columns, &Disk::P2);
+    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::P2));
 }
