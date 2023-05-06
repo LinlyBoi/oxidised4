@@ -38,9 +38,11 @@ impl PlayState {
         self.circles.push((x, y, Disk::P1));
         self.player_turn = false;
     }
-    pub fn play_cpu(&mut self, cook: fn(&Board, Disk, &i32) -> Board) {
-        self.board
-            .play(Disk::P2, cook(&self.board, Disk::P2, &5).last_move as usize);
+    pub fn play_cpu(&mut self, diff: &i32, cook: fn(&Board, Disk, &i32) -> Board) {
+        self.board.play(
+            Disk::P2,
+            cook(&self.board, Disk::P2, diff).last_move as usize,
+        );
         let column: i32 = self.board.last_move;
         self.bottom[column as usize] -= 1;
         let (x, y) = get_circle_coords(column, self.bottom[column as usize]);

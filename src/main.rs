@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use oxidised4::{
     bored::{GameState, MenuState, PlayState, Strategy},
     gamedata::{
@@ -63,14 +65,20 @@ fn main() {
                             }
                         }
                     }
-                    false => match strategy {
-                        Strategy::MiniMax => state.play_cpu(minimax_decision),
-                        Strategy::AlphaBeta => state.play_cpu(minimax_decision_pruning),
-                    },
-                }
-                if state.board.game_over() {
-                    let scores = state.board.getscore();
-                    println!("Player score: {} \n CPU Score: {}", scores.0, scores.1);
+                    false => {
+                        dbg!();
+                        let time = Instant::now();
+                        match strategy {
+                            Strategy::MiniMax => state.play_cpu(&difficulty, minimax_decision),
+                            Strategy::AlphaBeta => {
+                                state.play_cpu(&difficulty, minimax_decision_pruning)
+                            }
+                        };
+                        println!(
+                            "Time elapsed in cpu turn: {} ms",
+                            time.elapsed().as_millis()
+                        );
+                    }
                 }
 
                 for circle in state.clone().circles {
@@ -93,11 +101,8 @@ const STARTY: i32 = 9;
 fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> Option<i32> {
     //row,col return
     let mouse_pos = rl.get_mouse_x();
-    dbg!(mouse_pos);
     for num in 1..NCOL + 1 {
-        dbg!(mouse_pos < sw * (num) - STARTY);
         if (mouse_pos > sw * (num - 1) + STARTY) && (mouse_pos < sw * (num) - STARTY) {
-            dbg!(num);
             return Some(num - 1);
         }
     }
