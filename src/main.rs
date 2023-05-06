@@ -39,9 +39,10 @@ fn main() {
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         if d.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
-            let column = get_mouse_column(&d, square_widf);
-            let coords = get_circle_coords(1, column);
-            state.circles.push((coords.1, coords.0, Disk::P1));
+            if let Some(column) = get_mouse_column(&d, square_widf) {
+                let coords = get_circle_coords(1, column);
+                state.circles.push((coords.1, coords.0, Disk::P1));
+            }
         }
         for circle in &state.circles {
             let (x, y, disk) = circle;
@@ -79,7 +80,7 @@ fn get_circle_coords(x: i32, y: i32) -> (i32, i32) {
     };
     returned
 }
-fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> i32 {
+fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> Option<i32> {
     //row,col return
     let mouse_pos = rl.get_mouse_x();
     dbg!(mouse_pos);
@@ -87,8 +88,8 @@ fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> i32 {
         dbg!(mouse_pos < sw * (num) - STARTY);
         if (mouse_pos > sw * (num - 1) + STARTY) && (mouse_pos < sw * (num) - STARTY) {
             dbg!(num);
-            return num;
+            return Some(num);
         }
     }
-    -100
+    None
 }
