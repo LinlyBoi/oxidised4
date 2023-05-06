@@ -1,22 +1,20 @@
+use oxidised4::bored::GameState;
 use raylib::prelude::*;
 const NROW: i32 = 6;
 const NCOL: i32 = 7;
+const BOARDSTART: (i32, i32) = (0, 0);
 
 fn main() {
     let (mut rl, thread) = raylib::init().size(640, 480).title("Hello, World").build();
 
-    let _rust_orange = Color::new(222, 165, 132, 255);
-    let _ray_white = Color::new(255, 255, 255, 255);
     //images
     let board_image = Image::load_image("resouces/board.png").expect("WHAT DA HAILLL");
     let _ = rl
         .load_texture(&thread, "resouces/board.png")
         .expect("couldn't load texture :(");
-
     let _ = rl
         .load_texture(&thread, "resouces/bracc.png")
         .expect("couldn't load texture :(");
-
     let circle_image = Image::load_image("resouces/bracc.png").expect("WHAT DA HAILLL");
     let _ = rl
         .load_texture(&thread, "resouces/bracc.png")
@@ -29,25 +27,23 @@ fn main() {
     let circle_texture = rl
         .load_texture_from_image(&thread, &circle_image)
         .expect("WHAT DA HAILL");
-    let square_widf = board_texture.width / NROW;
-    let square_heif = board_texture.height / NCOL;
-    let square_wewant = (square_widf * NROW / 2, square_heif * 3 / 2);
-    let square_center = square_widf / 2;
+    let square_widf = board_texture.width / NCOL;
+    dbg!(square_widf);
+    let square_heif = board_texture.height / NROW;
+    let _square_wewant = (square_widf * NROW / 2, square_heif * 3 / 2);
+    let _square_center = square_widf / 2;
     //7,9 are the values to center the circle
+    let state: GameState = GameState::default();
 
     rl.set_target_fps(60);
     while !rl.window_should_close() {
-        let pressed_key = rl.get_key_pressed();
         let mut d = rl.begin_drawing(&thread);
-        let (x, y) = get_circle_coords(7, 2);
-        d.clear_background(Color::WHITE);
-        d.draw_texture(&circle_texture, x, y, Color::VIOLET);
-        d.draw_texture(&board_texture, 0, 0, Color::VIOLET);
-        if let Some(pressed_key) = pressed_key {
-            // Certain keyboards may have keys raylib does not expect. Uncomment this line if so.
-            // let pressed_key: u32 = unsafe { std::mem::transmute(pressed_key) };
-            d.draw_text(&format!("{:?}", pressed_key), 100, 12, 10, Color::BLACK);
+        if d.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
+            let column = get_mouse_column(&d, square_widf);
+            d.draw_texture(&circle_texture, column, STARTY, Color::VIOLET);
         }
+        d.clear_background(Color::WHITE);
+        d.draw_texture(&board_texture, BOARDSTART.0, BOARDSTART.1, Color::VIOLET);
     }
 }
 
@@ -71,4 +67,16 @@ fn get_circle_coords(row: i32, column: i32) -> (i32, i32) {
         }
     };
     returned
+}
+fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> i32 {
+    //row,col return
+    let mouse_pos = rl.get_mouse_x();
+    dbg!(mouse_pos);
+    for num in 1..NCOL {
+        dbg!(mouse_pos < sw * (num) - STARTX);
+        if (mouse_pos > sw * (num - 1) + STARTX) && (mouse_pos < sw * (num) - STARTX) {
+            return num;
+        }
+    }
+    10
 }
