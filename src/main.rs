@@ -58,23 +58,23 @@ fn main() {
 }
 
 //TODO move this to a struct
-const STARTX: i32 = 9;
-const STARTY: i32 = 7;
+const STARTY: i32 = 9;
+const STARTX: i32 = 7;
 const WX: i32 = 14;
 const WY: i32 = 14;
 const CIRCLEWIDTH: i32 = 56;
 fn get_circle_coords(x: i32, y: i32) -> (i32, i32) {
-    let mut returned: (i32, i32) = (STARTX, STARTY);
+    let mut returned: (i32, i32) = (STARTY, STARTX);
     match x {
         1 => {}
         _ => {
-            returned.0 = STARTX + (CIRCLEWIDTH * (x - 1)) + (WX * (x - 1));
+            returned.0 = STARTY + (CIRCLEWIDTH * (x - 1)) + (WX * (x - 1));
         }
     };
     match y {
         1 => {}
         _ => {
-            returned.1 = STARTY + (CIRCLEWIDTH * (y - 1)) + (WY * (y - 1));
+            returned.1 = STARTX + (CIRCLEWIDTH * (y - 1)) + (WY * (y - 1));
         }
     };
     returned
@@ -84,8 +84,8 @@ fn get_mouse_column(rl: &RaylibHandle, sw: i32) -> i32 {
     let mouse_pos = rl.get_mouse_x();
     dbg!(mouse_pos);
     for num in 1..NCOL + 1 {
-        dbg!(mouse_pos < sw * (num) - STARTX);
-        if (mouse_pos > sw * (num - 1) + STARTX) && (mouse_pos < sw * (num) - STARTX) {
+        dbg!(mouse_pos < sw * (num) - STARTY);
+        if (mouse_pos > sw * (num - 1) + STARTY) && (mouse_pos < sw * (num) - STARTY) {
             dbg!(num);
             return num;
         }
