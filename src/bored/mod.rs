@@ -1,3 +1,5 @@
+use std::fmt::{self, Display};
+
 use raylib::{
     prelude::{Color, MouseButton},
     RaylibHandle,
@@ -59,7 +61,7 @@ pub struct MenuState {
     pub selection: Selection,
     pub strategy: Strategy,
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Strategy {
     MiniMax,
     AlphaBeta,
@@ -91,11 +93,11 @@ impl MenuState {
             }
             Selection::Cooking => {
                 if rl.is_mouse_button_pressed(MouseButton::MOUSE_LEFT_BUTTON) {
-                    self.difficulty = 3;
+                    self.strategy = Strategy::MiniMax;
                     self.selection = Selection::Done;
                 }
                 if rl.is_mouse_button_pressed(MouseButton::MOUSE_RIGHT_BUTTON) {
-                    self.difficulty = 5;
+                    self.strategy = Strategy::AlphaBeta;
                     self.selection = Selection::Done;
                 }
             }
@@ -114,6 +116,16 @@ pub enum Selection {
     Difficulty,
     Cooking,
     Done,
+}
+impl Display for Strategy {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name: String;
+        match self {
+            Self::MiniMax => name = String::from("MiniMax"),
+            Self::AlphaBeta => name = String::from("AlphaBeta"),
+        };
+        write!(f, "{}", name)
+    }
 }
 
 fn get_circle_coords(x: i32, y: i32) -> (i32, i32) {
