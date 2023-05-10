@@ -16,7 +16,7 @@ const BOARDSTART: (i32, i32) = (0, 0);
 fn main() {
     let (mut rl, thread) = raylib::init()
         .size(WIDTH, HEIGHT)
-        .title("Hello, World")
+        .title("Connect 4 Game (bad)")
         .build();
 
     //images
@@ -101,7 +101,7 @@ fn main() {
                         Disk::P2 => Color::YELLOW,
                         Disk::EMPTY => Color::WHITE,
                     };
-                    d.draw_texture(&circle_texture, x, y, color);
+                    d.draw_texture(&circle_texture, x - 1, y + 2, color);
                 }
                 d.clear_background(Color::WHITE);
             }

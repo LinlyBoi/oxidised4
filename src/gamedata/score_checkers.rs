@@ -88,32 +88,37 @@ pub fn scan(
             None => break,
         }
     }
-    in_a_row.len() as i32
+    in_a_row
+        .iter()
+        .filter(|d| variant_eq(*d, &player_disk))
+        .count() as i32
 }
 // board[(2,3)];
 pub fn get_legal_moves(
     (row, col): &(usize, usize),
     (nrow, ncol): (usize, usize),
 ) -> Vec<Direction> {
-    let _max_col = ncol - 1;
-    let _max_row = nrow - 1;
+    let max_col = ncol - 1;
+    let max_row = nrow - 1;
     let mut moves: Vec<Direction> = vec![];
-    match *row {
-        0 => moves.push(Direction::Up),
-        _max_rows => moves.push(Direction::Down),
-        _ => {
-            moves.push(Direction::Up);
-            moves.push(Direction::Down);
-        }
-    };
-    match *col {
-        0 => moves.push(Direction::Right),
-        _max_col => moves.push(Direction::Left),
-        _ => {
-            moves.push(Direction::Left);
-            moves.push(Direction::Right)
-        }
-    };
+    if *row > 0 && *row < max_row {
+        //dbg!(row, max_row);
+        moves.push(Direction::Up);
+        moves.push(Direction::Down);
+    } else if *row == 0 {
+        moves.push(Direction::Up);
+    } else if *row == max_row {
+        moves.push(Direction::Down);
+    }
+    if (*col > 0 && *col < max_col) {
+        moves.push(Direction::Left);
+        moves.push(Direction::Right);
+    } else if *col == 0 {
+        moves.push(Direction::Right);
+    } else if *col == max_col {
+        moves.push(Direction::Left);
+    }
+
     if moves.contains(&Direction::Up) && moves.contains(&Direction::Left) {
         moves.push(Direction::UpLeft);
     }
@@ -127,6 +132,20 @@ pub fn get_legal_moves(
         moves.push(Direction::DownRight);
     }
     moves
+}
+#[test]
+fn dir_test() {
+    let moves1 = get_legal_moves(&(0, 0), (6, 7));
+    dbg!(&moves1);
+    assert_eq!(3, moves1.len());
+    assert!(moves1.contains(&Direction::Up));
+    let moves2 = get_legal_moves(&(0, 3), (6, 7));
+    dbg!(&moves2);
+    assert_eq!(5, moves2.len());
+
+    let moves3 = get_legal_moves(&(1, 3), (6, 7));
+    dbg!(&moves3);
+    assert_eq!(8, moves3.len());
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]

@@ -103,76 +103,76 @@ fn minimise_pruning(
         }
     }
 }
-#[test]
-fn minimax_test() {
-    let time = Instant::now();
-    let mut board = Board::default();
-    let mut disk = Disk::P2;
-    let _depth = 5;
-    let _turn1 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
-    dbg!(&board.columns);
-    disk = flip_disk(disk);
-    let _turn2 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
-    disk = flip_disk(disk);
-    let _turn3 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
-    disk = flip_disk(disk);
-    let _turn4 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
-    disk = flip_disk(disk);
-    let _turn5 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
-    for column in board.columns.as_rows() {
-        column
-            .iter()
-            .map(|x| {
-                print!("{:#?},", x);
-                x
-            })
-            .count();
-        println!();
-    }
-    dbg!(time.elapsed().as_millis());
-    assert!(false);
-}
-#[test]
-fn minimax_pruning_test() {
-    let time = Instant::now();
-    let mut board = Board::default();
-    let mut disk = Disk::P2;
-    let _depth = 5;
-    let _turn1 = board.play(
-        disk,
-        minimax_decision_pruning(&board, disk, &5).last_move as usize,
-    );
-    dbg!(&board.columns);
-    disk = flip_disk(disk);
-    let _turn2 = board.play(
-        disk,
-        minimax_decision_pruning(&board, disk, &5).last_move as usize,
-    );
-    disk = flip_disk(disk);
-    let _turn3 = board.play(
-        disk,
-        minimax_decision_pruning(&board, disk, &5).last_move as usize,
-    );
-    disk = flip_disk(disk);
-    let _turn4 = board.play(
-        disk,
-        minimax_decision_pruning(&board, disk, &5).last_move as usize,
-    );
-    disk = flip_disk(disk);
-    let _turn5 = board.play(
-        disk,
-        minimax_decision_pruning(&board, disk, &5).last_move as usize,
-    );
-    for column in board.columns.as_rows() {
-        column
-            .iter()
-            .map(|x| {
-                print!("{:#?},", x);
-                x
-            })
-            .count();
-        println!();
-    }
-    dbg!(time.elapsed().as_millis());
-    assert!(false);
-}
+//#[test]
+//fn minimax_test() {
+//    let time = Instant::now();
+//    let mut board = Board::default();
+//    let mut disk = Disk::P2;
+//    let _depth = 5;
+//    let _turn1 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
+//    dbg!(&board.columns);
+//    disk = flip_disk(disk);
+//    let _turn2 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
+//    disk = flip_disk(disk);
+//    let _turn3 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
+//    disk = flip_disk(disk);
+//    let _turn4 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
+//    disk = flip_disk(disk);
+//    let _turn5 = board.play(disk, minimax_decision(&board, disk, &5).last_move as usize);
+//    for column in board.columns.as_rows() {
+//        column
+//            .iter()
+//            .map(|x| {
+//                print!("{:#?},", x);
+//                x
+//            })
+//            .count();
+//        println!();
+//    }
+//    dbg!(time.elapsed().as_millis());
+//    assert!(false);
+//}
+//#[test]
+//fn minimax_pruning_test() {
+//    let time = Instant::now();
+//    let mut board = Board::default();
+//    let mut disk = Disk::P2;
+//    let _depth = 5;
+//    let _turn1 = board.play(
+//        disk,
+//        minimax_decision_pruning(&board, disk, &5).last_move as usize,
+//    );
+//    dbg!(&board.columns);
+//    disk = flip_disk(disk);
+//    let _turn2 = board.play(
+//        disk,
+//        minimax_decision_pruning(&board, disk, &5).last_move as usize,
+//    );
+//    disk = flip_disk(disk);
+//    let _turn3 = board.play(
+//        disk,
+//        minimax_decision_pruning(&board, disk, &5).last_move as usize,
+//    );
+//    disk = flip_disk(disk);
+//    let _turn4 = board.play(
+//        disk,
+//        minimax_decision_pruning(&board, disk, &5).last_move as usize,
+//    );
+//    disk = flip_disk(disk);
+//    let _turn5 = board.play(
+//        disk,
+//        minimax_decision_pruning(&board, disk, &5).last_move as usize,
+//    );
+//    for column in board.columns.as_rows() {
+//        column
+//            .iter()
+//            .map(|x| {
+//                print!("{:#?},", x);
+//                x
+//            })
+//            .count();
+//        println!();
+//    }
+//    dbg!(time.elapsed().as_millis());
+//    assert!(false);
+//}

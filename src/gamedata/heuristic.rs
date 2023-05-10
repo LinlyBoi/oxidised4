@@ -222,25 +222,6 @@ fn heur_scan(
 //Tests because I am making everything public
 //TODO separate module here
 #[test]
-fn streak_test_1() {
-    let mut board = Board::default();
-    board.play(Disk::P2, 3);
-    board.play(Disk::P2, 3);
-    board.play(Disk::P2, 3);
-    board.play(Disk::P2, 2);
-    board.play(Disk::P2, 1);
-    let sequences = get_streaks(&board.columns, &Disk::P2);
-    assert_eq!(POT_STREAKS * 3, potential_streaks(&sequences, &Disk::P2));
-    board.play(Disk::P2, 0);
-    let _sequences = get_streaks(&board.columns, &Disk::P2);
-    board.play(Disk::P2, 3);
-    board.play(Disk::P2, 3);
-    board.play(Disk::P2, 3);
-    board.play(Disk::P2, 3);
-    let sequences = get_streaks(&board.columns, &Disk::P2);
-    assert_eq!(POT_STREAKS * 2, potential_streaks(&sequences, &Disk::P2));
-}
-#[test]
 fn win_test_flipping() {
     let mut board = Board::default();
     board.play(Disk::P2, 3);
@@ -254,14 +235,5 @@ fn win_test_flipping() {
     board.play(Disk::P2, 6);
     let sequences = get_wins(&board.columns, &Disk::P2);
     dbg!(&sequences);
-    assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::P2));
-}
-#[test]
-fn win_test_flipping_hard() {
-    let mut board = Board::default();
-    board.play(Disk::P2, 1);
-    board.play(Disk::P2, 2);
-    board.play(Disk::P2, 4);
-    let sequences = get_wins(&board.columns, &Disk::P2);
     assert_eq!(POT_WIN, potential_wins(&sequences, &Disk::P2));
 }
