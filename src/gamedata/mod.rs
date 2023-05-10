@@ -58,32 +58,34 @@ impl Board {
             Some(disk) => match disk {
                 Disk::P1 => {
                     for _move in moves {
-                        let mut consecutive = scan(&self.columns, &index, _move.clone(), 4);
+                        let mut consecutive = scan(&self.columns, &index, _move.clone(), 4, *disk);
                         if consecutive < 4 {
                             consecutive += scan(
                                 &self.columns,
                                 &index,
-                                flip_direction(_move),
-                                4 - consecutive + 1,
-                            )
+                                flip_direction(_move.clone()),
+                                4 - consecutive,
+                                *disk,
+                            ) - 1;
                         }
-                        if consecutive - 1 == 4 {
+                        if consecutive == 4 {
                             self.p1_score += 1
                         }
                     }
                 }
                 Disk::P2 => {
                     for _move in moves {
-                        let mut consecutive = scan(&self.columns, &index, _move.clone(), 4);
+                        let mut consecutive = scan(&self.columns, &index, _move.clone(), 4, *disk);
                         if consecutive < 4 {
                             consecutive += scan(
                                 &self.columns,
                                 &index,
-                                flip_direction(_move),
-                                4 - consecutive + 1,
-                            )
+                                flip_direction(_move.clone()),
+                                4 - consecutive,
+                                *disk,
+                            ) - 1;
                         }
-                        if consecutive - 1 == 4 {
+                        if consecutive == 4 {
                             self.p2_score += 1
                         }
                     }
