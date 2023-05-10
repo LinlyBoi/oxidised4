@@ -1,3 +1,5 @@
+use std::time::{self, Instant};
+
 use super::{flip_disk, heuristic::get_score, Board, Disk};
 pub fn minimax_decision(board: &Board, disk: Disk, depth: &i32) -> Board {
     let (child, _) = maximise(board, &disk, depth);
@@ -103,6 +105,7 @@ fn minimise_pruning(
 }
 #[test]
 fn minimax_test() {
+    let time = Instant::now();
     let mut board = Board::default();
     let mut disk = Disk::P2;
     let _depth = 5;
@@ -126,10 +129,12 @@ fn minimax_test() {
             .count();
         println!();
     }
+    dbg!(time.elapsed().as_millis());
     assert!(false);
 }
 #[test]
 fn minimax_pruning_test() {
+    let time = Instant::now();
     let mut board = Board::default();
     let mut disk = Disk::P2;
     let _depth = 5;
@@ -168,5 +173,6 @@ fn minimax_pruning_test() {
             .count();
         println!();
     }
+    dbg!(time.elapsed().as_millis());
     assert!(false);
 }
