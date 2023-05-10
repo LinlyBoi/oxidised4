@@ -6,6 +6,7 @@ use oxidised4::{
         algorithms::{minimax_decision, minimax_decision_pruning},
         Disk,
     },
+    HEIGHT, WIDTH,
 };
 use raylib::prelude::*;
 const NROW: i32 = 6;
@@ -13,7 +14,10 @@ const NCOL: i32 = 7;
 const BOARDSTART: (i32, i32) = (0, 0);
 
 fn main() {
-    let (mut rl, thread) = raylib::init().size(640, 480).title("Hello, World").build();
+    let (mut rl, thread) = raylib::init()
+        .size(WIDTH, HEIGHT)
+        .title("Hello, World")
+        .build();
 
     //images
     let board_image = Image::load_image("resouces/board.png").expect("WHAT DA HAILLL");
@@ -88,7 +92,7 @@ fn main() {
                     \n Last move: {}",
                     scores.0, scores.1, difficulty, strategy, state.board.last_move
                 );
-                d.draw_text(&scores_display, 500, 200, 15, Color::BLACK);
+                d.draw_text(&scores_display, WIDTH - 140, 40, 15, Color::BLACK);
 
                 for circle in state.clone().circles {
                     let (x, y, disk) = circle;
