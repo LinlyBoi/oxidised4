@@ -42,7 +42,7 @@ fn main() {
     let _square_center = square_widf / 2;
     //7,9 are the values to center the circle
     let mut state: GameState = GameState::MainMenu(MenuState::default());
-    let mut strategy = Strategy::MiniMax;
+    let mut strategy = Strategy::AlphaBeta;
     let mut difficulty = 3;
 
     rl.set_target_fps(60);
@@ -54,6 +54,7 @@ fn main() {
                     strategy = mstate.strategy.clone();
                     difficulty = mstate.difficulty.clone();
                     state = GameState::Play(PlayState::default());
+                    dbg!(&strategy);
                 }
             }
             GameState::Play(ref mut state) => {
@@ -80,6 +81,14 @@ fn main() {
                         );
                     }
                 }
+                d.draw_texture(&board_texture, BOARDSTART.0, BOARDSTART.1, Color::VIOLET);
+                let scores = state.board.getscore();
+                let scores_display = format!(
+                    "Player Score: {} \n CPU Score: {}\n Difficulty: {}\n Strategy: {}, 
+                    \n Last move: {}",
+                    scores.0, scores.1, difficulty, strategy, state.board.last_move
+                );
+                d.draw_text(&scores_display, 500, 200, 15, Color::BLACK);
 
                 for circle in state.clone().circles {
                     let (x, y, disk) = circle;
@@ -91,7 +100,6 @@ fn main() {
                     d.draw_texture(&circle_texture, x, y, color);
                 }
                 d.clear_background(Color::WHITE);
-                d.draw_texture(&board_texture, BOARDSTART.0, BOARDSTART.1, Color::VIOLET);
             }
         }
     }
