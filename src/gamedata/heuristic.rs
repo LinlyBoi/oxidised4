@@ -6,21 +6,22 @@ use super::{
     Board, Disk,
 };
 //multipliers
-const POT_STREAK: i32 = 3; //one streak is kind of poopy
-const POT_STREAKS: i32 = 4;
-const POT_WIN: i32 = 5; // should be nerfed if its just 1 potential win
-const POT_WINS: i32 = 6;
+const POT_STREAK: i32 = 1; //one streak is kind of poopy
+const POT_STREAKS: i32 = 2;
+const POT_WIN: i32 = 2; // should be nerfed if its just 1 potential win
+const POT_WINS: i32 = 4;
 const SCORE_DIFF: i32 = 40;
 
 pub fn get_score(board: &Board, disk: Disk) -> i32 {
     //this should be summing up a bunch of functions defined below this one
     let sequences = get_streaks(&board.columns, &disk);
+    let wins = get_wins(&board.columns, &disk);
     let score: i32 = match disk {
         Disk::P1 => board.p1_score - board.p2_score,
         Disk::P2 => board.p2_score - board.p1_score,
         Disk::EMPTY => panic!("Why would you ever"),
     };
-    potential_streaks(&sequences, &disk) + potential_wins(&sequences, &disk) + score * SCORE_DIFF
+    potential_streaks(&sequences, &disk) + potential_wins(&wins, &disk) + score * SCORE_DIFF
 }
 fn potential_wins(sequences: &Vec<Vec<Disk>>, _disk: &Disk) -> i32 {
     let count: i32 = sequences.len() as i32;
@@ -122,7 +123,6 @@ fn get_wins(board: &Array2D<Disk>, player_disk: &Disk) -> Vec<Vec<Disk>> {
                     );
                     opp_sequence.remove(0);
                     win.append(&mut opp_sequence);
-                    dbg!(&win);
                     wins.push(win);
                 }
                 _ => {}
