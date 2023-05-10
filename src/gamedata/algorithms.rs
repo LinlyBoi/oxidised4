@@ -50,8 +50,8 @@ fn maximise_pruning(
     board: &Board,
     disk: &Disk,
     depth: &i32,
-    alpha: i32,
-    mut beta: i32,
+    mut alpha: i32,
+    beta: i32,
 ) -> (Option<Board>, i32) {
     match board.game_over() || *depth == 0 {
         true => (None, get_score(board, *disk)),
@@ -60,11 +60,11 @@ fn maximise_pruning(
             for child in board.get_children(*disk) {
                 let (_, utility) =
                     minimise_pruning(&child, &flip_disk(*disk), &(depth - 1), alpha, beta);
-                if utility <= alpha {
+                if beta <= alpha {
                     break;
                 }
-                if utility < beta {
-                    beta = utility;
+                if utility > alpha {
+                    alpha = utility;
                 }
 
                 if utility > max_utility {
@@ -79,8 +79,8 @@ fn minimise_pruning(
     board: &Board,
     disk: &Disk,
     depth: &i32,
-    mut alpha: i32,
-    beta: i32,
+    alpha: i32,
+    mut beta: i32,
 ) -> (Option<Board>, i32) {
     match board.game_over() || *depth == 0 {
         true => (None, get_score(board, flip_disk(*disk))),
@@ -89,11 +89,11 @@ fn minimise_pruning(
             for child in board.get_children(*disk) {
                 let (_, utility) =
                     maximise_pruning(&child, &flip_disk(*disk), &(depth - 1), alpha, beta);
-                if utility >= beta {
+                if beta <= alpha {
                     break;
                 }
-                if utility > alpha {
-                    alpha = utility;
+                if utility < beta {
+                    beta = utility;
                 }
                 if utility < min_utility {
                     (min_child, min_utility) = (Some(child), utility)
