@@ -34,6 +34,9 @@ impl Board {
         (self.p1_score, self.p2_score)
     }
     pub fn play(&mut self, disk: Disk, col: usize) -> bool {
+        if self.game_over() {
+            return false;
+        }
         let column = &self.columns.as_columns()[col];
         let empty = column.iter().filter(|&a| matches!(a, Disk::EMPTY)).count();
         // dbg!(empty);
