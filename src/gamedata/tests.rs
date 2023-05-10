@@ -17,6 +17,7 @@ fn play() {
     assert!(board.play(Disk::P2, 0));
     assert_eq!(1, board.p2_score);
     assert!(board.play(Disk::P2, 0));
+    assert_eq!(2, board.p2_score);
     assert!(board.play(Disk::P2, 0));
     assert!(!board.play(Disk::P2, 0));
 
@@ -54,8 +55,14 @@ fn scan_updown() {
     board.play(Disk::P2, 0);
     board.play(Disk::P2, 0);
     board.play(Disk::P2, 0);
-    assert_eq!(4, scan(&board.columns, &(4, 0), Direction::Down, 4));
-    assert_eq!(4, scan(&board.columns, &(3, 0), Direction::Down, 4));
+    assert_eq!(
+        4,
+        scan(&board.columns, &(4, 0), Direction::Down, 4, Disk::P2)
+    );
+    assert_eq!(
+        4,
+        scan(&board.columns, &(3, 0), Direction::Down, 4, Disk::P2)
+    );
 }
 #[test]
 fn scan_updown2() {
@@ -64,7 +71,7 @@ fn scan_updown2() {
     board.play(Disk::P1, 0);
     board.play(Disk::P2, 0);
     board.play(Disk::P2, 0);
-    assert_eq!(1, scan(&board.columns, &(0, 0), Direction::Up, 4));
+    assert_eq!(1, scan(&board.columns, &(0, 0), Direction::Up, 4, Disk::P2));
 }
 #[test]
 fn scan_forwardback() {
@@ -74,8 +81,14 @@ fn scan_forwardback() {
     board.play(Disk::P2, 2);
     board.play(Disk::P2, 3);
 
-    assert_eq!(4, scan(&board.columns, &(0, 0), Direction::Right, 4));
-    assert_eq!(4, scan(&board.columns, &(0, 3), Direction::Left, 4));
+    assert_eq!(
+        4,
+        scan(&board.columns, &(0, 0), Direction::Right, 4, Disk::P2)
+    );
+    assert_eq!(
+        4,
+        scan(&board.columns, &(0, 3), Direction::Left, 4, Disk::P2)
+    );
 }
 #[test]
 fn scan_forwardback2() {
@@ -84,8 +97,14 @@ fn scan_forwardback2() {
     board.play(Disk::P2, 1);
     board.play(Disk::P1, 2);
     board.play(Disk::P2, 3);
-    assert_eq!(2, scan(&board.columns, &(0, 0), Direction::Right, 4));
-    assert_eq!(1, scan(&board.columns, &(0, 3), Direction::Left, 4));
+    assert_eq!(
+        2,
+        scan(&board.columns, &(0, 0), Direction::Right, 4, Disk::P2)
+    );
+    assert_eq!(
+        1,
+        scan(&board.columns, &(0, 3), Direction::Left, 4, Disk::P2)
+    );
 }
 #[test]
 fn scan_diag1() {
@@ -100,8 +119,14 @@ fn scan_diag1() {
     board.play(Disk::P1, 3);
     board.play(Disk::P1, 3);
     board.play(Disk::P2, 3);
-    assert_eq!(4, scan(&board.columns, &(0, 0), Direction::UpRight, 4));
-    assert_eq!(4, scan(&board.columns, &(3, 3), Direction::DownLeft, 4));
+    assert_eq!(
+        4,
+        scan(&board.columns, &(0, 0), Direction::UpRight, 4, Disk::P2)
+    );
+    assert_eq!(
+        4,
+        scan(&board.columns, &(3, 3), Direction::DownLeft, 4, Disk::P2)
+    );
 }
 #[test]
 fn scan_diag2() {
@@ -117,8 +142,14 @@ fn scan_diag2() {
     board.play(Disk::P1, 0);
     board.play(Disk::P2, 0);
     dbg!(&board.columns.as_columns());
-    assert_eq!(4, scan(&board.columns, &(0, 3), Direction::UpLeft, 4));
-    assert_eq!(4, scan(&board.columns, &(3, 0), Direction::DownRight, 4));
+    assert_eq!(
+        4,
+        scan(&board.columns, &(0, 3), Direction::UpLeft, 4, Disk::P2)
+    );
+    assert_eq!(
+        4,
+        scan(&board.columns, &(3, 0), Direction::DownRight, 4, Disk::P2)
+    );
 }
 #[test]
 fn variant_eq_test() {
