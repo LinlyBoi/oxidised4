@@ -1,5 +1,3 @@
-use std::time::{self, Instant};
-
 use super::{flip_disk, heuristic::get_score, Board, Disk};
 pub fn minimax_decision(board: &Board, disk: Disk, depth: &i32) -> Board {
     let (child, _) = maximise(board, &disk, depth);

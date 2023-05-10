@@ -5,7 +5,7 @@ use raylib::{
     RaylibHandle,
 };
 
-use crate::gamedata::{algorithms::minimax_decision, Board, Disk};
+use crate::gamedata::{Board, Disk};
 pub const STARTY: i32 = 9;
 pub const STARTX: i32 = 7;
 const WX: i32 = 14;

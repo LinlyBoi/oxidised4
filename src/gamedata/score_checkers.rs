@@ -110,7 +110,7 @@ pub fn get_legal_moves(
     } else if *row == max_row {
         moves.push(Direction::Down);
     }
-    if (*col > 0 && *col < max_col) {
+    if *col > 0 && *col < max_col {
         moves.push(Direction::Left);
         moves.push(Direction::Right);
     } else if *col == 0 {
